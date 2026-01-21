@@ -1,387 +1,332 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Obitou & Habsa</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --cream: #FDFBF7;
-            --lace: #f3eee3;
-            --sage: #CBD5C0;
-            --dusty-rose: #DCAE96;
-            --deep-rose: #A67B5B;
-            --tape: rgba(220, 174, 150, 0.3);
-        }
+import React, { useState, useEffect } from 'react';
+import { Heart, Coffee, Plane, Sparkles, Music, Image as ImageIcon, MessageCircle, Star, Send, MapPin, Camera } from 'lucide-react';
 
-        body {
-            background-color: var(--cream);
-            color: #4A4A4A;
-            font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
-            scroll-behavior: smooth;
-            cursor: none; /* Custom cursor */
-        }
+const App = () => {
+  const [stage, setStage] = useState('intro'); // 'intro' or 'main'
+  const [complimentIndex, setComplimentIndex] = useState(0);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [clicks, setClicks] = useState(0);
+  const [wishes, setWishes] = useState([]);
+  const [currentWish, setCurrentWish] = useState("");
 
-        .serif { font-family: 'Playfair Display', serif; }
-        .cursive { font-family: 'Instrument Serif', serif; font-style: italic; }
+  const photos = [
+    { url: "https://i.imgur.com/sSeCbRA.jpeg", caption: "En Güzel Gülüş" },
+    { url: "https://i.imgur.com/zfPZJen.jpeg", caption: "Unutulmaz Bir An" },
+    { url: "https://i.imgur.com/8HTqveh.jpeg", caption: "Dostluğun Işığı" },
+    { url: "https://i.imgur.com/Ia4iEja.jpeg", caption: "Zarafet ve Nezaket" }
+  ];
 
-        /* Custom Heart Cursor */
-        #cursor {
-            width: 20px;
-            height: 20px;
-            background: var(--dusty-rose);
-            position: fixed;
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 10000;
-            mix-blend-mode: multiply;
-            transition: transform 0.1s ease;
-        }
+  const compliments = [
+    "Dünyanın en iyi kalpli insanı!",
+    "Tanıdığım en harika kız!",
+    "Sınıfımızın neşesi!",
+    "Hayatımda karşılaştığım en özel insan.",
+    "Gülüşün dünyayı aydınlatıyor!",
+    "Dürüstlüğünle her zaman ilham veriyorsun.",
+    "Seninle her an daha değerli!",
+    "Zarafetin ve nezaketinle çok özelsin."
+  ];
 
-        /* Film Grain Overlay */
-        .grain::after {
-            content: "";
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none;
-            z-index: 9999;
-            opacity: 0.06;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3%3Ffilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-        }
+  const handleEnter = () => {
+    setShowConfetti(true);
+    setTimeout(() => {
+      setStage('main');
+      setShowConfetti(false);
+    }, 1000);
+  };
 
-        .floating {
-            animation: float 6s ease-in-out infinite;
-        }
+  const nextCompliment = () => {
+    setComplimentIndex((prev) => (prev + 1) % compliments.length);
+    setClicks(prev => prev + 1);
+  };
+
+  const [message, setMessage] = useState('');
+  const showToast = (txt) => {
+    setMessage(txt);
+    setTimeout(() => setMessage(''), 3000);
+  };
+
+  const releaseWish = (e) => {
+    e.preventDefault();
+    if (!currentWish.trim()) return;
+    setWishes([...wishes, { id: Date.now(), text: currentWish }]);
+    setCurrentWish("");
+    showToast("Dileğin gökyüzüne gönderildi! ✨");
+  };
+
+  if (stage === 'intro') {
+    return (
+      <div className="min-h-screen bg-[#050510] flex flex-col items-center justify-center relative overflow-hidden">
+        {[...Array(40)].map((_, i) => (
+          <div 
+            key={i}
+            className="absolute bg-white rounded-full animate-pulse"
+            style={{
+              width: Math.random() * 3 + 'px',
+              height: Math.random() * 3 + 'px',
+              left: Math.random() * 100 + '%',
+              top: Math.random() * 100 + '%',
+              animationDelay: Math.random() * 5 + 's',
+              opacity: Math.random()
+            }}
+          />
+        ))}
+        
+        <div className="relative z-10 text-center flex flex-col items-center gap-10">
+          <div className="space-y-4">
+            <h1 className="text-pink-100 text-5xl font-serif tracking-widest animate-in fade-in zoom-in duration-1000">
+              Duru'nun Dünyası
+            </h1>
+            <p className="text-pink-300/40 tracking-[0.4em] uppercase text-xs">Sihirli bir yolculuğa başla</p>
+          </div>
+          
+          <button 
+            onClick={handleEnter}
+            className="group relative transition-all duration-700 hover:scale-125 active:scale-90"
+          >
+            <div className="absolute inset-0 bg-pink-500/30 rounded-full blur-2xl group-hover:blur-3xl transition-all animate-pulse" />
+            <Heart size={140} fill="white" className="text-pink-500 relative z-10 drop-shadow-[0_0_25px_rgba(236,72,153,0.9)] transition-all group-hover:text-pink-400" />
+          </button>
+          
+          <p className="text-pink-200/60 text-sm font-light italic animate-pulse">Kalbe dokun...</p>
+        </div>
+
+        {showConfetti && (
+          <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+             {[...Array(60)].map((_, i) => (
+               <div 
+                key={i}
+                className="absolute w-2 h-2 bg-pink-400 rounded-full animate-ping"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                  animationDelay: `${Math.random() * 2}s`
+                }}
+               />
+             ))}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-[#fffafa] text-gray-800 font-sans selection:bg-pink-200 overflow-x-hidden">
+      <div className="h-1.5 bg-gradient-to-r from-pink-200 via-amber-200 to-pink-200 sticky top-0 z-50 shadow-sm" />
+
+      {/* Hero Section */}
+      <header className="relative pt-24 pb-16 px-4 text-center">
+        <div className="max-w-4xl mx-auto relative z-10">
+          <div className="inline-block relative">
+            <Star className="absolute -top-6 -left-6 text-amber-300 animate-spin-slow" size={24} />
+            <span className="text-pink-400 font-medium tracking-[0.4em] uppercase text-xs mb-4 block">Günün Yıldızı</span>
+            <Star className="absolute -bottom-6 -right-6 text-amber-300 animate-spin-slow" size={24} />
+          </div>
+          <h1 className="text-7xl md:text-9xl font-serif text-gray-900 mt-4 mb-8">Duru</h1>
+          <div className="flex justify-center items-center gap-4 text-pink-300">
+             <div className="h-px w-12 bg-pink-100" />
+             <p className="italic font-light tracking-wide text-lg">Cezayir'den Türkiye'ye uzanan bir dostluk...</p>
+             <div className="h-px w-12 bg-pink-100" />
+          </div>
+        </div>
+      </header>
+
+      <main className="max-w-5xl mx-auto px-6 pb-32 space-y-40">
+        
+        {/* Main Message */}
+        <section className="relative group">
+          <div className="absolute inset-0 bg-white rotate-1 shadow-xl rounded-3xl group-hover:rotate-0 transition-transform duration-700" />
+          <div className="relative bg-white -rotate-1 p-10 md:p-20 rounded-3xl border border-pink-50 shadow-lg group-hover:rotate-0 transition-transform duration-700">
+            <div className="flex justify-center mb-10">
+               <Sparkles className="text-amber-300 animate-pulse" size={40} />
+            </div>
+            <p className="text-2xl md:text-3xl leading-relaxed font-light text-gray-700 italic text-center">
+              "Sevgili Duru, hayatımda tanıdığım en iyi, en dürüst ve en harika kızlardan birisin. Seninle Cezayir'de tanıştığım için kendimi çok şanslı hissediyorum. Sen sadece bir sınıf arkadaşı değil, bir dostsun. Bu site senin ne kadar özel olduğunu hatırlatmak için yapıldı. Kalbinin güzelliği yüzüne yansıyor. Seni çok seviyoruz!"
+            </p>
+          </div>
+        </section>
+
+        {/* Polaroid Gallery Section */}
+        <section>
+          <div className="text-center mb-16">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <Camera size={24} className="text-pink-400" />
+              <h2 className="text-4xl font-serif">Anı Defterimiz</h2>
+            </div>
+            <p className="text-gray-400 text-sm tracking-widest uppercase italic">Her fotoğraf bir hikaye anlatır</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+            {photos.map((photo, index) => (
+              <div 
+                key={index} 
+                className="bg-white p-4 pb-12 shadow-2xl transition-all duration-500 hover:scale-105 hover:-translate-y-4 hover:z-20 border border-gray-100"
+                style={{ transform: `rotate(${(index % 2 === 0 ? -2 : 2) * (index + 1)}deg)` }}
+              >
+                <div className="aspect-square bg-gray-50 overflow-hidden relative group rounded-sm shadow-inner">
+                  <img 
+                    src={photo.url} 
+                    alt={photo.caption} 
+                    className="w-full h-full object-cover grayscale-[10%] group-hover:grayscale-0 transition-all duration-700"
+                    onError={(e) => { e.target.src = 'https://via.placeholder.com/400?text=Core+Memory'; }}
+                  />
+                  <div className="absolute inset-0 bg-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity" />
+                </div>
+                <div className="mt-6 text-center">
+                  <span className="font-serif italic text-gray-600 text-lg">{photo.caption}</span>
+                  <div className="flex justify-center gap-1 mt-2">
+                    <Heart size={12} className="text-pink-200 fill-current" />
+                    <Heart size={12} className="text-pink-200 fill-current" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Love Meter */}
+        <section className="text-center relative">
+          <div className="absolute -top-20 left-1/2 -translate-x-1/2 w-px h-20 bg-gradient-to-b from-transparent to-pink-200" />
+          <div className="bg-gradient-to-br from-white to-pink-50 rounded-[3rem] p-16 border border-white shadow-2xl max-w-xl mx-auto transform hover:scale-[1.02] transition-all">
+            <div className="flex justify-center mb-8">
+              <div className="p-5 bg-pink-100 rounded-full animate-bounce shadow-inner">
+                <Heart size={50} className="text-pink-500" fill="currentColor" />
+              </div>
+            </div>
+            <div className="min-h-[120px] flex items-center justify-center">
+              <p className="text-3xl font-serif italic text-gray-800 animate-in fade-in slide-in-from-top-6 duration-700" key={complimentIndex}>
+                "{compliments[complimentIndex]}"
+              </p>
+            </div>
+            <button 
+              onClick={nextCompliment}
+              className="mt-10 bg-gray-900 text-white px-12 py-5 rounded-full transition-all hover:bg-black hover:scale-105 active:scale-95 shadow-2xl font-semibold tracking-widest text-sm uppercase"
+            >
+              Sevgi Metresini Arttır ✨
+            </button>
+            <div className="mt-10 flex items-center justify-center gap-4">
+               <div className="h-1.5 flex-1 bg-white rounded-full overflow-hidden shadow-inner border border-pink-50">
+                  <div className="h-full bg-pink-400 transition-all duration-500 shadow-[0_0_10px_rgba(236,72,153,0.5)]" style={{ width: `${(clicks % 10) * 10}%` }} />
+               </div>
+               <span className="text-xs text-pink-400 font-bold tracking-tighter">LVL {Math.floor(clicks/10) + 1}</span>
+            </div>
+          </div>
+        </section>
+
+        {/* Interactive Cards */}
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-12">
+          <div className="group p-12 bg-white rounded-[2.5rem] border border-pink-50 shadow-sm hover:shadow-2xl transition-all cursor-pointer text-center relative overflow-hidden"
+               onClick={() => showToast("Geleceğin de bu kahve gibi tatlı ve huzurlu olsun! ☕")}>
+            <div className="absolute top-0 left-0 w-2 h-full bg-amber-100 group-hover:bg-amber-400 transition-colors" />
+            <div className="w-20 h-20 bg-amber-50 rounded-3xl flex items-center justify-center mx-auto mb-8 group-hover:rotate-12 transition-transform shadow-sm">
+              <Coffee className="text-amber-700" size={40} />
+            </div>
+            <h3 className="text-2xl font-serif mb-4">Kahve Keyfi</h3>
+            <p className="text-gray-500 leading-relaxed font-light">Her fincan bir sohbettir, her sohbet seninle güzeldir.</p>
+          </div>
+
+          <div className="group p-12 bg-white rounded-[2.5rem] border border-pink-50 shadow-sm hover:shadow-2xl transition-all cursor-pointer text-center relative overflow-hidden"
+               onClick={() => showToast("Mesafe ne olursa olsun, kalbimiz seninle! ✈️")}>
+            <div className="absolute top-0 right-0 w-2 h-full bg-blue-100 group-hover:bg-blue-400 transition-colors" />
+            <div className="w-20 h-20 bg-blue-50 rounded-3xl flex items-center justify-center mx-auto mb-8 group-hover:-translate-y-2 transition-transform shadow-sm">
+              <Plane className="text-blue-500" size={40} />
+            </div>
+            <h3 className="text-2xl font-serif mb-4">Kıtalar Arası Dostluk</h3>
+            <p className="text-gray-500 leading-relaxed font-light">Haritalar ne derse desin, dostluk mesafe tanımaz.</p>
+          </div>
+        </section>
+
+        {/* Wish Lanterns */}
+        <section className="max-w-xl mx-auto text-center bg-slate-900 p-12 rounded-[3rem] shadow-2xl relative overflow-hidden">
+           {/* Glow Effect */}
+           <div className="absolute -top-24 -left-24 w-48 h-48 bg-pink-500/20 blur-3xl rounded-full" />
+           <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-amber-500/10 blur-3xl rounded-full" />
+           
+           <div className="relative z-10">
+             <h2 className="text-3xl font-serif text-white mb-3">Dilek Fenerleri</h2>
+             <p className="text-pink-200/50 text-sm mb-10 tracking-widest uppercase">Gökyüzüne bir ışık bırak</p>
+             
+             <form onSubmit={releaseWish} className="relative mb-12">
+               <input 
+                 type="text" 
+                 value={currentWish}
+                 onChange={(e) => setCurrentWish(e.target.value)}
+                 placeholder="Duru için bir dilek yaz..."
+                 className="w-full bg-white/10 border border-white/10 rounded-full px-8 py-5 focus:outline-none focus:ring-2 focus:ring-pink-400 transition-all text-white placeholder:text-white/30 text-lg"
+               />
+               <button type="submit" className="absolute right-3 top-3 p-3 bg-pink-500 text-white rounded-full hover:bg-pink-400 shadow-lg transition-transform active:scale-90">
+                 <Send size={24} />
+               </button>
+             </form>
+
+             <div className="flex flex-wrap justify-center gap-4">
+                {wishes.map(wish => (
+                  <div key={wish.id} className="animate-float py-3 px-6 bg-white/5 rounded-full text-xs text-pink-100 border border-white/5 flex items-center gap-2 backdrop-blur-sm">
+                    <Star size={12} className="text-amber-400 fill-current" /> {wish.text}
+                  </div>
+                ))}
+             </div>
+           </div>
+        </section>
+
+      </main>
+
+      {/* Floating Elements */}
+      {message && (
+        <div className="fixed bottom-12 left-1/2 -translate-x-1/2 bg-white text-gray-900 px-10 py-5 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] z-50 animate-in fade-in slide-in-from-bottom-8 flex items-center gap-4 border border-pink-100">
+          <div className="p-2 bg-pink-50 rounded-full text-pink-500">
+            <MessageCircle size={20} />
+          </div>
+          <span className="text-sm font-semibold tracking-wide">{message}</span>
+        </div>
+      )}
+
+      {/* Aesthetic Footer */}
+      <footer className="bg-white py-32 px-6 border-t border-gray-50 text-center">
+        <div className="max-w-4xl mx-auto space-y-12">
+          <div className="flex flex-col items-center gap-4">
+            <MapPin size={28} className="text-pink-200" />
+            <span className="text-[10px] uppercase tracking-[0.5em] text-gray-400">Algeria — Istanbul — Always</span>
+          </div>
+          <div className="space-y-6">
+            <p className="text-gray-900 font-serif text-4xl italic px-4 leading-tight">"Güzelliğin kalbinden yüzüne yansıyor."</p>
+            <div className="h-0.5 w-16 bg-pink-100 mx-auto" />
+            <p className="text-gray-300 text-[10px] uppercase tracking-[0.6em] font-bold">Forever Friends</p>
+          </div>
+        </div>
+      </footer>
+
+      <div className="fixed top-10 right-10 z-50 hidden md:block">
+        <div className="bg-white/90 backdrop-blur shadow-2xl rounded-full pl-5 pr-8 py-3 border border-pink-50 flex items-center gap-4">
+          <div className="relative">
+            <Music size={16} className="text-pink-500 animate-pulse" />
+            <div className="absolute -top-1 -right-1 w-2 h-2 bg-pink-200 rounded-full animate-ping" />
+          </div>
+          <span className="text-[10px] uppercase tracking-widest text-gray-500 font-bold">Lofi Radio On</span>
+        </div>
+      </div>
+
+      <style dangerouslySetInnerHTML={{ __html: `
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+        
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        h1, h2, h3, .font-serif { font-family: 'Playfair Display', serif; }
 
         @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(2deg); }
+          0% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-30px) rotate(3deg); }
+          100% { transform: translateY(0px) rotate(0deg); }
         }
-
-        /* Polaroid Styling with Washi Tape */
-        .polaroid {
-            background: white;
-            padding: 12px 12px 35px 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            cursor: pointer;
-            position: relative;
-        }
-
-        .polaroid::before {
-            content: "";
-            position: absolute;
-            top: -15px;
-            left: 50%;
-            transform: translateX(-50%) rotate(-2deg);
-            width: 60px;
-            height: 20px;
-            background: var(--tape);
-            backdrop-filter: blur(2px);
-            z-index: 10;
-        }
-
-        .polaroid:hover {
-            transform: scale(1.08) rotate(0deg) translateY(-10px) !important;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
-            z-index: 50;
-        }
-
-        /* Modal Reveal */
-        #traitModal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(253, 251, 247, 0.95);
-            backdrop-filter: blur(12px);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-        }
-
-        .modal-inner {
-            background: white;
-            padding: 4rem 2rem;
-            border-radius: 1rem;
-            max-width: 550px;
-            width: 100%;
-            text-align: center;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.05);
-            border: 1px solid var(--lace);
-            position: relative;
-        }
-
-        .sparkle {
-            position: absolute;
-            pointer-events: none;
-            animation: sparkleAnim 2s linear forwards;
-        }
-
-        @keyframes sparkleAnim {
-            0% { transform: scale(0) rotate(0deg); opacity: 1; }
-            100% { transform: scale(1.5) rotate(180deg); opacity: 0; }
-        }
-
-        .wax-seal {
-            background: radial-gradient(circle, #8b1a1a 0%, #5e0b0b 100%);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2), inset 0 0 10px rgba(255,255,255,0.1);
-            transition: all 0.5s ease;
-        }
-
-        .letter-content {
-            max-height: 0;
-            opacity: 0;
-            transition: all 1s ease-in-out;
-            overflow: hidden;
-        }
-
-        .letter-open {
-            max-height: 1500px;
-            opacity: 1;
-        }
-
-        /* Decorative scribbles */
-        .scribble {
-            opacity: 0.1;
-            position: absolute;
-            pointer-events: none;
-        }
-
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: var(--cream); }
-        ::-webkit-scrollbar-thumb { background: var(--sage); }
-    </style>
-</head>
-<body class="grain">
-
-    <div id="cursor"></div>
-
-    <header class="fixed top-0 left-0 p-10 z-50">
-        <span class="serif text-xl tracking-[0.2em] text-[#8E867E] opacity-60">OBITOU & HABSA</span>
-    </header>
-
-    <main class="min-h-screen flex flex-col items-center pt-40 pb-64 px-6 text-center">
+        .animate-float { animation: float 8s ease-in-out infinite; }
         
-        <!-- Hero Section -->
-        <section class="max-w-3xl mb-40 relative">
-            <div class="mb-12 flex justify-center floating">
-                <svg width="100" height="100" viewBox="0 0 100 100" fill="#DCAE96">
-                    <path d="M50,20 C35,20 25,35 25,45 C25,55 35,50 50,50 C65,50 75,55 75,45 C75,35 65,20 50,20 M50,50 L35,75 M50,50 L65,75" fill="none" stroke="currentColor" stroke-width="2"/>
-                    <circle cx="50" cy="45" r="3" fill="currentColor"/>
-                </svg>
-            </div>
-            
-            <h1 class="serif text-7xl md:text-9xl mb-4 tracking-tighter text-stone-800">Habsa</h1>
-            <p class="cursive text-2xl md:text-3xl text-[#DCAE96] mb-8 tracking-widest">Windy Road Back To You</p>
-            <p class="serif italic text-3xl md:text-5xl text-stone-300 px-4 leading-tight mb-20">The world waited a year <br> for you to arrive.</p>
-            
-            <div class="flex flex-col md:flex-row items-center justify-center gap-12 md:gap-32">
-                <div class="group">
-                    <span class="block cursive text-2xl text-stone-300 group-hover:text-stone-500 transition-colors">Obitou</span>
-                    <span class="serif text-3xl">16.11.09</span>
-                </div>
-                <div class="group">
-                    <span class="block cursive text-2xl text-stone-300 group-hover:text-stone-500 transition-colors">Habsa</span>
-                    <span class="serif text-3xl">28.10.10</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- Dynamic Moodboard -->
-        <section class="w-full max-w-6xl mb-64 px-4 relative">
-            <!-- Decorative Background Elements -->
-            <div class="absolute -top-20 -left-10 opacity-10 rotate-12">
-                <svg width="200" height="200" viewBox="0 0 100 100"><path d="M10,50 Q50,0 90,50 T10,50" fill="none" stroke="black" stroke-width="0.5"/></svg>
-            </div>
-
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-10 md:gap-16 items-start">
-                
-                <!-- Card 1: Beauty -->
-                <div class="polaroid rotate-[-4deg] mt-10" onclick="showTrait('beauty')">
-                    <div class="aspect-[4/5] bg-stone-50 flex items-center justify-center text-6xl overflow-hidden grayscale hover:grayscale-0 transition-all duration-700">
-                        <span>🌷</span>
-                    </div>
-                    <p class="cursive mt-5 text-stone-500 text-xl">Her Beauty</p>
-                </div>
-
-                <!-- Text Highlight 1 -->
-                <div class="p-8 md:col-span-2 self-center">
-                    <div class="relative py-16 px-10 bg-white/20 backdrop-blur-md rounded-[3rem] border border-white/40 shadow-sm">
-                        <span class="absolute -top-5 left-10 cursive text-3xl text-[#DCAE96]">Core</span>
-                        <p class="serif text-4xl md:text-5xl italic text-stone-700 leading-tight">
-                            "A vintage soul <br> with a <span class="text-[#DCAE96]">golden heart</span>"
-                        </p>
-                    </div>
-                </div>
-
-                <!-- Card 2: Kindness -->
-                <div class="polaroid rotate-[3deg] md:mt-[-20px]" onclick="showTrait('kindness')">
-                    <div class="aspect-[4/5] bg-stone-50 flex items-center justify-center text-6xl grayscale hover:grayscale-0 transition-all duration-700">
-                        <span>🕊️</span>
-                    </div>
-                    <p class="cursive mt-5 text-stone-500 text-xl">Her Kindness</p>
-                </div>
-
-                <!-- Card 3: Funny -->
-                <div class="polaroid rotate-[-2deg]" onclick="showTrait('funny')">
-                    <div class="aspect-[4/5] bg-stone-50 flex items-center justify-center text-6xl grayscale hover:grayscale-0 transition-all duration-700">
-                        <span>🧸</span>
-                    </div>
-                    <p class="cursive mt-5 text-stone-500 text-xl">Her Humor</p>
-                </div>
-
-                <!-- Aesthetic Filler -->
-                <div class="hidden md:block polaroid rotate-[5deg] scale-90 opacity-80">
-                    <div class="aspect-[1/1] bg-[#F9F5F0] flex items-center justify-center text-4xl">
-                        <span>🎀</span>
-                    </div>
-                </div>
-
-                <!-- Card 4: Energy -->
-                <div class="polaroid rotate-[6deg] md:mt-10" onclick="showTrait('energy')">
-                    <div class="aspect-[4/5] bg-stone-50 flex items-center justify-center text-6xl grayscale hover:grayscale-0 transition-all duration-700">
-                        <span>✨</span>
-                    </div>
-                    <p class="cursive mt-5 text-stone-500 text-xl">Her Light</p>
-                </div>
-
-                <!-- Quote Card -->
-                <div class="md:col-span-2 p-10 flex items-center justify-center">
-                    <p class="serif text-2xl text-stone-400 italic tracking-widest max-w-xs">
-                        "She carries the sun in her smile and the moon in her eyes."
-                    </p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Final Letter Section -->
-        <section class="w-full max-w-2xl mb-40">
-            <div class="flex flex-col items-center">
-                <div class="mb-10 cursive text-stone-300 text-2xl tracking-widest">A Letter to You</div>
-                <button id="sealBtn" class="wax-seal w-28 h-28 rounded-full flex items-center justify-center text-white text-5xl cursor-pointer hover:scale-110 active:scale-95 transition-transform mb-12">
-                    <span class="serif">H</span>
-                </button>
-                
-                <div id="letter" class="letter-content bg-white p-10 md:p-20 shadow-2xl rounded-sm border border-stone-100">
-                    <div class="text-left space-y-10 serif text-xl md:text-2xl leading-relaxed text-stone-700">
-                        <p>To be honest, I wanted to build something as permanent as the impact you’ve had on me. October 28, 2010, was just a date on a calendar until I met you—now it feels like the day the world got a little brighter.</p>
-                        <p>Even though I started my journey on November 16, 2009, it feels like everything was just leading up to meeting you. You have this way of making everything feel easier, and you've made my life a whole lot happier just by being a part of it.</p>
-                        <p>Just a small space on the internet for a very big person in my life.</p>
-                        <div class="pt-16 flex flex-col items-end border-t border-stone-50">
-                            <span class="cursive text-4xl text-stone-300">Always,</span>
-                            <span class="serif text-5xl font-medium mt-4 text-stone-800 tracking-tighter">Obitou</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <footer class="mt-40 opacity-20 serif italic tracking-[1em] text-xs pb-20 uppercase">
-            Heaven Sent • 2010
-        </footer>
-    </main>
-
-    <!-- Interactive Trait Reveal -->
-    <div id="traitModal" onclick="closeTrait()">
-        <div class="modal-inner" onclick="event.stopPropagation()">
-            <div id="modalIcon" class="text-8xl mb-10 floating"></div>
-            <h2 id="modalTitle" class="serif text-4xl mb-6 text-stone-800 italic"></h2>
-            <p id="modalBody" class="serif text-2xl leading-relaxed text-stone-500 px-6"></p>
-            <button class="mt-12 cursive text-stone-300 text-xl hover:text-stone-800 transition-colors uppercase tracking-widest" onclick="closeTrait()">Close</button>
-        </div>
+        @keyframes spin-slow {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        .animate-spin-slow { animation: spin-slow 15s linear infinite; }
+      `}} />
     </div>
+  );
+};
 
-    <script>
-        const cursor = document.getElementById('cursor');
-        const sealBtn = document.getElementById('sealBtn');
-        const letter = document.getElementById('letter');
-        const traitModal = document.getElementById('traitModal');
-
-        // Custom Cursor Logic
-        document.addEventListener('mousemove', (e) => {
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
-        });
-
-        document.addEventListener('mousedown', () => cursor.style.transform = 'scale(0.8)');
-        document.addEventListener('mouseup', () => cursor.style.transform = 'scale(1)');
-
-        // Sparkle Effect on Click
-        document.addEventListener('click', (e) => {
-            for(let i=0; i<5; i++) {
-                const s = document.createElement('div');
-                s.className = 'sparkle';
-                s.innerHTML = '✨';
-                s.style.left = e.clientX + (Math.random()*40-20) + 'px';
-                s.style.top = e.clientY + (Math.random()*40-20) + 'px';
-                s.style.fontSize = Math.random()*20+10 + 'px';
-                document.body.appendChild(s);
-                setTimeout(() => s.remove(), 2000);
-            }
-        });
-
-        // Letter Logic
-        sealBtn.addEventListener('click', () => {
-            letter.classList.toggle('letter-open');
-            if(letter.classList.contains('letter-open')) {
-                setTimeout(() => letter.scrollIntoView({ behavior: 'smooth', block: 'center' }), 200);
-            }
-        });
-
-        // Trait Data
-        const traits = {
-            beauty: {
-                icon: '🌷',
-                title: 'Unmatched Beauty',
-                text: "You carry a beauty that isn't just about how you look—though that is breathtaking. It's about the light you bring into every room. You're like a vintage film photograph, timeless and perfectly captured."
-            },
-            kindness: {
-                icon: '🕊️',
-                title: 'Endless Kindness',
-                text: "You have a heart that feels like a safe place. Your kindness isn't loud; it's the quiet, steady way you support the people you love. It's the most beautiful thing about you."
-            },
-            funny: {
-                icon: '🧸',
-                title: 'Purest Humor',
-                text: "You're the only person who truly gets my humor. You make me laugh in ways no one else can, making the hard days feel so much lighter. Life is just better when we're laughing together."
-            },
-            energy: {
-                icon: '✨',
-                title: 'Heavenly Energy',
-                text: "There is a warmth to you that feels like home. You are my favorite person to be around, and your energy is the piece of my world that makes everything feel complete."
-            }
-        };
-
-        function showTrait(type) {
-            const data = traits[type];
-            document.getElementById('modalIcon').innerText = data.icon;
-            document.getElementById('modalTitle').innerText = data.title;
-            document.getElementById('modalBody').innerText = data.text;
-            traitModal.style.display = 'flex';
-        }
-
-        function closeTrait() {
-            traitModal.style.display = 'none';
-        }
-
-        // Parallax for Moodboard
-        document.addEventListener('mousemove', (e) => {
-            const items = document.querySelectorAll('.polaroid');
-            const x = (window.innerWidth / 2 - e.pageX) / 60;
-            const y = (window.innerHeight / 2 - e.pageY) / 60;
-            
-            items.forEach((item, index) => {
-                const speed = (index + 1) * 0.15;
-                const baseRotation = item.classList.contains('rotate-[-4deg]') ? -4 : 
-                                   item.classList.contains('rotate-[3deg]') ? 3 : 
-                                   item.classList.contains('rotate-[-2deg]') ? -2 : 6;
-                item.style.transform = `translate(${x * speed}px, ${y * speed}px) rotate(${baseRotation}deg)`;
-            });
-        });
-    </script>
-</body>
-</html>
+export default App;
