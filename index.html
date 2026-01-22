@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Duru'nun Dünyası</title>
+    <title>Duru's World</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
@@ -11,10 +11,9 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; cursor: none; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; cursor: none; background-color: #fffafa; transition: background-color 1s ease; scroll-behavior: smooth; }
         .font-serif { font-family: 'Playfair Display', serif; }
         
-        /* Custom Cursor */
         #custom-cursor {
             position: fixed;
             width: 20px;
@@ -23,39 +22,70 @@
             border-radius: 50%;
             pointer-events: none;
             z-index: 9999;
-            transition: transform 0.1s ease;
+            transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        @keyframes float {
-            0% { transform: translateY(0px) rotate(0deg); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        .page-enter { animation: revealEffect 1.2s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+        @keyframes revealEffect {
+            from { opacity: 0; filter: blur(10px); transform: translateY(30px) scale(0.95); }
+            to { opacity: 1; filter: blur(0px); transform: translateY(0) scale(1); }
         }
+
+        .vibe-active { animation: vibe-pulse 3s infinite ease-in-out; }
+        @keyframes vibe-pulse {
+            0%, 100% { background-color: #fffafa; }
+            50% { background-color: #fff1f5; }
+        }
+
         .memory-particle {
             position: fixed;
             bottom: -50px;
             pointer-events: none;
             z-index: 0;
-            animation: float linear forwards;
+            animation: float-up linear forwards;
+        }
+        @keyframes float-up {
+            0% { transform: translateY(0px) rotate(0deg) scale(0); opacity: 0; }
+            10% { opacity: 1; transform: scale(1); }
+            90% { opacity: 1; }
+            100% { transform: translateY(-110vh) rotate(360deg) scale(1.5); opacity: 0; }
         }
 
-        @keyframes spin-slow {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+        .floating-emoji {
+            animation: floating 4s ease-in-out infinite;
         }
-        .animate-spin-slow { animation: spin-slow 15s linear infinite; }
+        @keyframes floating {
+            0%, 100% { transform: translateY(0px) rotate(-5deg); }
+            50% { transform: translateY(-25px) rotate(5deg); }
+        }
 
-        /* Vibe Pulse */
-        .vibe-active {
-            animation: vibe-pulse 2s infinite ease-in-out;
+        .polaroid {
+            background: white;
+            padding: 1rem 1rem 3.5rem 1rem;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+            transform: rotate(var(--rotation));
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        @keyframes vibe-pulse {
-            0%, 100% { background-color: #fffafa; }
-            50% { background-color: #fff1f5; }
+        .polaroid:hover {
+            transform: rotate(0deg) scale(1.1) translateY(-10px);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+            z-index: 20;
+        }
+
+        .stagger-reveal > * {
+            opacity: 0;
+            animation: staggerIn 0.8s forwards;
+        }
+        @keyframes staggerIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .letter-content {
+            background-image: radial-gradient(#fecdd3 0.5px, transparent 0.5px);
+            background-size: 20px 20px;
         }
     </style>
 </head>
@@ -68,40 +98,14 @@
 
         const App = () => {
             const [stage, setStage] = useState('intro');
-            const [complimentIndex, setComplimentIndex] = useState(0);
-            const [showConfetti, setShowConfetti] = useState(false);
-            const [clicks, setClicks] = useState(0);
+            const [activeTab, setActiveTab] = useState('home'); 
             const [wishes, setWishes] = useState([]);
             const [currentWish, setCurrentWish] = useState("");
-            const [message, setMessage] = useState("");
             const [isVibeActive, setIsVibeActive] = useState(false);
             const [particles, setParticles] = useState([]);
 
-            const photos = [
-                { url: "https://i.imgur.com/sSeCbRA.jpeg", caption: "En Güzel Gülüş" },
-                { url: "https://i.imgur.com/zfPZJen.jpeg", caption: "Unutulmaz Bir An" },
-                { url: "https://i.imgur.com/8HTqveh.jpeg", caption: "Dostluğun Işığı" },
-                { url: "https://i.imgur.com/Ia4iEja.jpeg", caption: "Zarafet ve Nezaket" }
-            ];
-
-            const compliments = [
-                "Dünyanın en iyi kalpli insanı!", "Tanıdığım en harika kız!", "Sınıfımızın neşesi!",
-                "Hayatımda karşılaştığım en özel insan.", "Gülüşün dünyayı aydınlatıyor!",
-                "Dürüstlüğünle her zaman ilham veriyorsun.", "Seninle her an daha değerli!",
-                "Zarafetin ve nezaketinle çok özelsin.", "Zekanla herkesi kendine hayran bırakıyorsun!",
-                "Pozitif enerjinle etrafına ışık saçıyorsun.", "Dostluğun benim için çok kıymetli.",
-                "Her zaman yardıma koşan altın kalpli biri!", "Seninle sohbet etmek dünyanın en keyifli şeyi.",
-                "Her zorlukta dimdik duran güçlü bir karakter!", "Samimiyetinle insanlara güven veriyorsun.",
-                "Gelecekte çok başarılı olacağına eminim!", "Fikirlerin her zaman çok değerli.",
-                "Senin gibi bir dost her şeye bedel.", "Mütevazılığın seni daha da güzelleştiriyor.",
-                "İyi ki yollarımız Cezayir'de kesişmiş!"
-            ];
-
             useEffect(() => {
-                // Lucide icons init
                 lucide.createIcons();
-
-                // Custom Cursor logic
                 const cursor = document.getElementById('custom-cursor');
                 const moveCursor = (e) => {
                     cursor.style.left = e.clientX + 'px';
@@ -109,213 +113,284 @@
                 };
                 window.addEventListener('mousemove', moveCursor);
 
-                // Particle Spawner for "Vibe Mode"
                 let interval;
                 if (isVibeActive) {
                     interval = setInterval(() => {
                         const id = Date.now();
-                        const icons = ['✨', '💖', '☕', '⭐', '🌸'];
+                        const icons = ['✨', '💖', '⭐', '🌸', '🎈', '🍭', '🦋'];
                         const newParticle = {
                             id,
                             left: Math.random() * 100 + 'vw',
-                            duration: 5 + Math.random() * 5 + 's',
+                            duration: 3 + Math.random() * 5 + 's',
                             content: icons[Math.floor(Math.random() * icons.length)],
-                            size: 15 + Math.random() * 20 + 'px'
+                            size: 15 + Math.random() * 30 + 'px'
                         };
-                        setParticles(prev => [...prev.slice(-15), newParticle]);
-                    }, 1000);
+                        setParticles(prev => [...prev.slice(-25), newParticle]);
+                    }, 400);
                 }
-
                 return () => {
                     window.removeEventListener('mousemove', moveCursor);
                     clearInterval(interval);
                 };
-            }, [stage, complimentIndex, wishes, message, isVibeActive]);
+            }, [isVibeActive]);
 
-            const handleEnter = () => {
-                setShowConfetti(true);
-                setTimeout(() => {
-                    setStage('main');
-                    setShowConfetti(false);
-                }, 1000);
-            };
+            useEffect(() => {
+                window.scrollTo(0, 0);
+                lucide.createIcons();
+            }, [activeTab]);
 
-            const nextCompliment = () => {
-                setComplimentIndex((prev) => (prev + 1) % compliments.length);
-                setClicks(prev => prev + 1);
-            };
-
-            const showToast = (txt) => {
-                setMessage(txt);
-                setTimeout(() => setMessage(''), 3000);
-            };
+            const handleEnter = () => setStage('main');
+            const navigateTo = (tab) => setActiveTab(tab);
 
             const releaseWish = (e) => {
                 e.preventDefault();
                 if (!currentWish.trim()) return;
                 setWishes([...wishes, { id: Date.now(), text: currentWish }]);
                 setCurrentWish("");
-                showToast("Dileğin gökyüzüne gönderildi! ✨");
             };
+
+            const renderHome = () => (
+                <div className="page-enter space-y-32 pb-40 pt-10">
+                    <section className="text-center py-10 relative">
+                        <div className="absolute top-0 left-1/2 -translate-x-1/2 -z-10 opacity-20 blur-3xl w-96 h-96 bg-pink-300 rounded-full animate-pulse"></div>
+                        <h1 className="text-8xl md:text-[12rem] font-serif text-gray-900 opacity-90 tracking-tighter hover:scale-105 transition-transform duration-1000 cursor-default">Duru</h1>
+                        <p className="text-pink-400 tracking-[0.4em] uppercase text-xs font-bold mt-4 animate-bounce">The Discovery of a Lifetime</p>
+                    </section>
+                    
+                    <section className="bg-white p-12 md:p-24 rounded-[3.5rem] border border-pink-50 shadow-2xl max-w-4xl mx-auto transform -rotate-1 hover:rotate-0 transition-all duration-1000 group">
+                        <div className="flex justify-center mb-8 text-amber-300 group-hover:rotate-180 transition-transform duration-1000">
+                            <i data-lucide="sparkles" className="w-16 h-16"></i>
+                        </div>
+                        <p className="text-2xl md:text-4xl leading-relaxed font-light text-gray-700 italic text-center">
+                            "For the first three years, I saw you every day but I never realized how special you were... until these last three years. Now, I can't imagine school without you."
+                        </p>
+                    </section>
+
+                    <section className="max-w-5xl mx-auto px-4">
+                        <h2 className="text-4xl font-serif text-center mb-16">The Six Year Shift</h2>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                            <div className="bg-gray-50/50 p-10 rounded-[3rem] border border-gray-100 opacity-60 hover:opacity-100 transition-all duration-500 hover:scale-[1.02]">
+                                <span className="text-xs font-black text-gray-400 uppercase tracking-widest block mb-4">The First 3 Years</span>
+                                <h3 className="text-2xl font-serif mb-4">Hidden in Plain Sight</h3>
+                                <p className="text-gray-500 leading-relaxed">
+                                    We shared the same school, the same air, yet we rarely spoke. I didn't know that the girl sitting just a few desks away would become my most precious friend.
+                                </p>
+                            </div>
+                            <div className="bg-white p-10 rounded-[3rem] border-2 border-pink-100 shadow-xl relative overflow-hidden group hover:scale-[1.05] transition-all duration-700">
+                                <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-100 transition-opacity">
+                                    <i data-lucide="heart" className="w-12 h-12 text-pink-500 fill-current"></i>
+                                </div>
+                                <span className="text-xs font-black text-pink-500 uppercase tracking-widest block mb-4">The Last 3 Years</span>
+                                <h3 className="text-2xl font-serif mb-4 text-pink-900">The Ultimate Discovery</h3>
+                                <p className="text-pink-800/70 leading-relaxed">
+                                    Everything changed when we finally started talking. I realized your kindness, your humor, and your soul are one in a billion. These years have been the best.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section className="text-center space-y-12">
+                        <h2 className="text-4xl font-serif">The Secrets of Duru</h2>
+                        <div className="flex justify-center gap-10 md:gap-20">
+                            {[
+                                { emoji: '✨', tab: 'beauty', label: 'Her Beauty' },
+                                { emoji: '🌸', tab: 'friendly', label: 'Her Friendship' },
+                                { emoji: '💖', tab: 'lovely', label: 'Her Spirit' }
+                            ].map((item, idx) => (
+                                <button key={idx} onClick={() => navigateTo(item.tab)} className="group flex flex-col items-center gap-4 transition-all hover:scale-125 active:scale-95">
+                                    <div className="w-24 h-24 bg-white rounded-full shadow-xl flex items-center justify-center text-4xl floating-emoji border border-pink-50 group-hover:border-pink-300 transition-all group-hover:shadow-pink-200/50">
+                                        {item.emoji}
+                                    </div>
+                                    <span className="text-[10px] uppercase tracking-widest font-black text-gray-400 group-hover:text-pink-500">{item.label}</span>
+                                </button>
+                            ))}
+                        </div>
+                    </section>
+                </div>
+            );
+
+            const renderTraitPage = (title, emoji, text, image, colorClass) => (
+                <div className="page-enter min-h-screen flex flex-col items-center py-20 px-6">
+                    <button onClick={() => navigateTo('home')} className="mb-12 text-gray-400 hover:text-pink-500 flex items-center gap-2 transition-all hover:-translate-x-3 self-start md:ml-20">
+                        <i data-lucide="arrow-left" className="w-5 h-5"></i>
+                        <span className="text-xs font-bold uppercase tracking-widest">Return Home</span>
+                    </button>
+                    
+                    <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+                        <div className="rounded-[4.5rem] overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.4)] aspect-[3/4] hover:scale-[1.02] transition-transform duration-1000">
+                            <img src={image} className="w-full h-full object-cover" alt={title} />
+                        </div>
+                        <div className="space-y-10 stagger-reveal">
+                            <div className={`text-8xl animate-bounce ${colorClass}`}>{emoji}</div>
+                            <h2 className="text-7xl font-serif text-gray-900">{title}</h2>
+                            <p className="text-2xl text-gray-600 leading-relaxed italic font-light border-l-4 border-pink-100 pl-8">
+                                {text}
+                            </p>
+                            <div className="pt-8 flex gap-6 items-center">
+                                <div className="h-0.5 w-16 bg-pink-200" />
+                                <p className="text-sm uppercase tracking-[0.4em] text-pink-400 font-bold animate-pulse">Our True Star</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+
+            const renderLetter = () => (
+                <div className="page-enter max-w-4xl mx-auto py-20 px-4">
+                    <div className="bg-white rounded-[4rem] shadow-2xl overflow-hidden relative border border-pink-50 hover:shadow-pink-100/50 transition-all duration-1000">
+                        <div className="h-24 bg-pink-50 flex items-center justify-center">
+                            <i data-lucide="mail" className="w-8 h-8 text-pink-400 animate-bounce"></i>
+                        </div>
+                        <div className="p-12 md:p-20 letter-content">
+                            <h2 className="text-5xl font-serif text-gray-900 mb-12 text-center">To My Dearest Duru</h2>
+                            <div className="space-y-8 text-xl md:text-2xl text-gray-700 leading-[1.8] font-light italic">
+                                <p>
+                                    As I sit here thinking about everything we've shared, I can't help but smile. Looking back at the last three years, it feels like I finally woke up and saw the most amazing person who was there all along. 
+                                </p>
+                                <p>
+                                    I truly hope that this isn't just a chapter in our lives, but the beginning of a story that never ends. You are so much more than just a school friend to me; you are someone I admire, someone I trust, and someone who makes the world feel a little brighter just by existing.
+                                </p>
+                                <p>
+                                    I hope we stay best friends for our entire life. I want to be there for your biggest wins, your quiet moments, and everything in between. No matter where life takes us after these hallways, I want you to know that you'll always have a special place in my heart. 
+                                </p>
+                                <p className="pt-8 text-right font-serif text-3xl text-pink-500">
+                                    Forever Your Friend,
+                                </p>
+                            </div>
+                        </div>
+                        <div className="absolute top-10 right-10 rotate-12 opacity-20">
+                            <i data-lucide="stamp" className="w-20 h-20 text-pink-600"></i>
+                        </div>
+                    </div>
+                    
+                    <div className="mt-20 text-center animate-pulse">
+                        <i data-lucide="infinity" className="w-12 h-12 text-pink-200 mx-auto"></i>
+                        <p className="text-xs uppercase tracking-[0.5em] text-gray-400 mt-4 font-bold">Best Friends For Life</p>
+                    </div>
+                </div>
+            );
+
+            const renderWishes = () => (
+                <div className="page-enter max-w-4xl mx-auto text-center space-y-16 py-20 px-4">
+                    <div className="bg-gray-950 p-20 rounded-[5rem] shadow-3xl relative overflow-hidden text-white group">
+                        <div className="absolute -top-24 -left-24 w-64 h-64 bg-pink-500/20 rounded-full blur-[80px] group-hover:bg-pink-500/30 transition-all duration-1000"></div>
+                        <h2 className="text-5xl font-serif mb-6">Wish Lanterns</h2>
+                        <p className="text-pink-200/40 text-xs mb-12 tracking-widest uppercase">Send a glowing message into her world</p>
+                        <form onSubmit={releaseWish} className="relative mb-20 max-w-lg mx-auto z-10">
+                            <input type="text" value={currentWish} onChange={(e) => setCurrentWish(e.target.value)} placeholder="Type a message..."
+                                className="w-full bg-white/5 border border-white/10 rounded-full px-10 py-6 focus:outline-none focus:ring-2 focus:ring-pink-500 text-white placeholder:text-white/20 transition-all backdrop-blur-sm"
+                            />
+                            <button type="submit" className="absolute right-4 top-4 p-4 bg-pink-600 rounded-full hover:bg-pink-400 transition-all hover:rotate-12 active:scale-90 shadow-lg">
+                                <i data-lucide="send" className="w-6 h-6"></i>
+                            </button>
+                        </form>
+                        <div className="flex flex-wrap justify-center gap-6">
+                            {wishes.map(w => (
+                                <div key={w.id} className="py-4 px-8 bg-white/10 rounded-full text-md text-pink-100 border border-white/10 animate-bounce hover:bg-pink-600 transition-colors cursor-default">✨ {w.text}</div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="py-20">
+                        <h3 className="text-4xl font-serif mb-16 tracking-tight">The Gallery of Now</h3>
+                        <div className="flex flex-wrap justify-center gap-12">
+                            {[
+                                { img: "https://i.imgur.com/sSeCbRA.jpeg", rot: "-4deg" },
+                                { img: "https://i.imgur.com/zfPZJen.jpeg", rot: "3deg" },
+                                { img: "https://i.imgur.com/8HTqveh.jpeg", rot: "-2deg" },
+                                { img: "https://i.imgur.com/Ia4iEja.jpeg", rot: "5deg" }
+                            ].map((p, i) => (
+                                <div key={i} className="polaroid cursor-crosshair" style={{"--rotation": p.rot}}>
+                                    <img src={p.img} className="w-56 h-56 object-cover grayscale hover:grayscale-0 transition-all duration-[1.5s]" alt="Duru Polaroid" />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            );
 
             if (stage === 'intro') {
                 return (
                     <div className="min-h-screen bg-[#050510] flex flex-col items-center justify-center relative overflow-hidden">
-                        {[...Array(40)].map((_, i) => (
-                            <div key={i} className="absolute bg-white rounded-full animate-pulse"
-                                style={{
-                                    width: Math.random() * 3 + 'px',
-                                    height: Math.random() * 3 + 'px',
-                                    left: Math.random() * 100 + '%',
-                                    top: Math.random() * 100 + '%',
-                                    animationDelay: Math.random() * 5 + 's',
-                                    opacity: Math.random()
-                                }}
-                            />
-                        ))}
-                        <div className="relative z-10 text-center flex flex-col items-center gap-10">
-                            <div className="space-y-4">
-                                <h1 className="text-pink-100 text-6xl font-serif tracking-widest">Duru'nun Dünyası</h1>
-                                <p className="text-pink-300/40 tracking-[0.4em] uppercase text-xs">Sihirli bir yolculuğa başla</p>
-                            </div>
-                            <button onClick={handleEnter} className="group relative transition-all duration-700 hover:scale-110 active:scale-95">
-                                <div className="absolute inset-0 bg-pink-500/30 rounded-full blur-3xl group-hover:blur-[60px] transition-all animate-pulse" />
-                                <i data-lucide="heart" className="w-40 h-40 text-pink-500 fill-current relative z-10 drop-shadow-[0_0_35px_rgba(236,72,153,0.8)]"></i>
+                        <div className="absolute inset-0 z-0">
+                            {[...Array(40)].map((_, i) => (
+                                <div key={i} className="absolute bg-white rounded-full animate-pulse" 
+                                    style={{ 
+                                        width: Math.random() * 3 + 'px', 
+                                        height: Math.random() * 3 + 'px', 
+                                        top: Math.random() * 100 + '%', 
+                                        left: Math.random() * 100 + '%',
+                                        animationDelay: Math.random() * 5 + 's'
+                                    }} 
+                                />
+                            ))}
+                        </div>
+                        <div className="text-center z-10 space-y-14 stagger-reveal">
+                            <h1 className="text-pink-100 text-7xl font-serif tracking-[0.2em] animate-pulse">Duru's Universe</h1>
+                            <button onClick={handleEnter} className="group relative hover:scale-110 transition-transform duration-700">
+                                <div className="absolute inset-0 bg-pink-500/20 rounded-full blur-[80px] group-hover:blur-[100px] transition-all" />
+                                <i data-lucide="heart" className="w-40 h-40 text-pink-600 fill-current relative drop-shadow-[0_0_30px_rgba(236,72,153,1)] animate-bounce"></i>
                             </button>
-                            <p className="text-pink-200/60 text-sm font-light italic animate-bounce">Girmek için tıkla...</p>
+                            <p className="text-white/40 text-sm tracking-[0.5em] uppercase font-bold">Unveil the Truth</p>
                         </div>
                     </div>
                 );
             }
 
             return (
-                <div className={`min-h-screen transition-colors duration-1000 selection:bg-pink-200 overflow-x-hidden ${isVibeActive ? 'vibe-active' : 'bg-[#fffafa]'}`}>
-                    
-                    {/* Floating Particles */}
+                <div className={`min-h-screen pb-40 transition-all duration-[2000ms] ${isVibeActive ? 'vibe-active' : ''}`}>
                     {particles.map(p => (
-                        <div key={p.id} className="memory-particle" style={{ left: p.left, animationDuration: p.duration, fontSize: p.size }}>
-                            {p.content}
-                        </div>
+                        <div key={p.id} className="memory-particle" style={{ left: p.left, animationDuration: p.duration, fontSize: p.size }}>{p.content}</div>
                     ))}
 
-                    <div className="h-1.5 bg-gradient-to-r from-pink-300 via-amber-200 to-pink-300 sticky top-0 z-50 shadow-sm" />
+                    <nav className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[100] bg-white/60 backdrop-blur-2xl border border-pink-100/50 px-10 py-5 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.1)] flex items-center gap-12 hover:px-14 transition-all duration-700">
+                        {[
+                            { id: 'home', icon: 'home', label: 'Home' },
+                            { id: 'letter', icon: 'pen-tool', label: 'Letter' },
+                            { id: 'wishes', icon: 'sparkles', label: 'Wishes' }
+                        ].map(tab => (
+                            <button key={tab.id} onClick={() => navigateTo(tab.id)}
+                                className={`flex flex-col items-center gap-2 transition-all ${activeTab === tab.id || (['beauty', 'friendly', 'lovely'].includes(activeTab) && tab.id === 'home') ? 'text-pink-600 scale-125' : 'text-gray-400 hover:text-pink-300 hover:scale-110'}`}
+                            >
+                                <i data-lucide={tab.icon} className="w-6 h-6"></i>
+                                <span className="text-[10px] font-black uppercase tracking-widest">{tab.label}</span>
+                            </button>
+                        ))}
+                    </nav>
 
-                    {/* Vibe Mode Toggle */}
-                    <button 
-                        onClick={() => setIsVibeActive(!isVibeActive)}
-                        className={`fixed top-8 right-8 z-[60] px-6 py-3 rounded-full flex items-center gap-3 shadow-xl transition-all border-2 ${isVibeActive ? 'bg-pink-500 text-white border-white animate-pulse' : 'bg-white text-gray-500 border-pink-50 hover:bg-pink-50'}`}
+                    <button onClick={() => setIsVibeActive(!isVibeActive)}
+                        className={`fixed top-8 right-8 z-[110] p-5 rounded-full border shadow-2xl transition-all hover:scale-110 ${isVibeActive ? 'bg-pink-600 text-white border-white animate-spin-slow' : 'bg-white text-pink-400 border-pink-100'}`}
                     >
-                        <i data-lucide={isVibeActive ? "music" : "volume-x"} className="w-5 h-5"></i>
-                        <span className="text-[10px] font-bold uppercase tracking-widest">{isVibeActive ? 'Vibe Mode: ON' : 'Vibe Mode: OFF'}</span>
+                        <i data-lucide={isVibeActive ? "music" : "volume-x"} className="w-7 h-7"></i>
                     </button>
 
-                    <header className="relative pt-32 pb-20 px-4 text-center">
-                        <div className="max-w-4xl mx-auto relative z-10">
-                            <h1 className="text-8xl md:text-[12rem] font-serif text-gray-900 mt-4 mb-8 tracking-tighter opacity-90">Duru</h1>
-                            <div className="flex justify-center items-center gap-6 text-pink-300">
-                                <div className="h-0.5 w-16 bg-pink-100" />
-                                <p className="italic font-light tracking-widest text-xl">Dostluğun en saf hali...</p>
-                                <div className="h-0.5 w-16 bg-pink-100" />
-                            </div>
-                        </div>
-                    </header>
+                    <div className="px-6 max-w-7xl mx-auto pt-10">
+                        {activeTab === 'home' && renderHome()}
+                        {activeTab === 'letter' && renderLetter()}
+                        {activeTab === 'wishes' && renderWishes()}
+                        
+                        {activeTab === 'beauty' && renderTraitPage(
+                            "Truly Beautiful", "✨", 
+                            "Duru's beauty isn't just on the surface—her real grace is in her presence. She lights up every room she enters. Her beauty is simply a reflection of the kindness in her heart.",
+                            "https://i.imgur.com/zfPZJen.jpeg", "text-amber-400"
+                        )}
+                        
+                        {activeTab === 'friendly' && renderTraitPage(
+                            "The Best Friend", "🌸", 
+                            "Ever since our paths crossed properly three years ago, Duru has been a constant. She's not just a friend; she's the most reliable person you could ever meet.",
+                            "https://i.imgur.com/8HTqveh.jpeg", "text-pink-300"
+                        )}
 
-                    <main className="max-w-5xl mx-auto px-6 pb-40 space-y-48 relative z-10">
-                        <section className="relative group">
-                            <div className="absolute inset-0 bg-white rotate-2 shadow-2xl rounded-[3rem] group-hover:rotate-0 transition-transform duration-1000 opacity-50" />
-                            <div className="relative bg-white -rotate-1 p-12 md:p-24 rounded-[3rem] border border-pink-50 shadow-xl group-hover:rotate-0 transition-all duration-700">
-                                <div className="flex justify-center mb-12 text-amber-300">
-                                    <i data-lucide="sparkles" className="w-12 h-12 animate-pulse"></i>
-                                </div>
-                                <p className="text-2xl md:text-4xl leading-[1.6] font-light text-gray-700 italic text-center">
-                                    "Sevgili Duru, hayatımda tanıdığım en dürüst ve en harika kızlardan birisin. Seninle Cezayir'de tanıştığım için kendimi çok şanslı hissediyorum. Kalbinin güzelliği yüzüne yansıyor. Seni çok seviyoruz!"
-                                </p>
-                            </div>
-                        </section>
+                        {activeTab === 'lovely' && renderTraitPage(
+                            "A Pure Spirit", "💖", 
+                            "She has the sweetest, most loving heart. Always accepting of others, always polite, and always helpful. She is truly a one-of-a-kind discovery.",
+                            "https://i.imgur.com/Ia4iEja.jpeg", "text-pink-500"
+                        )}
+                    </div>
 
-                        <section>
-                            <div className="text-center mb-20">
-                                <h2 className="text-5xl font-serif text-gray-800 mb-6">Anı Defterimiz</h2>
-                                <div className="h-1 w-20 bg-pink-200 mx-auto rounded-full" />
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-                                {photos.map((photo, index) => (
-                                    <div key={index} className="group bg-white p-5 pb-16 shadow-2xl transition-all duration-700 hover:-translate-y-6 hover:z-20 border border-gray-100"
-                                        style={{ transform: `rotate(${(index % 2 === 0 ? -3 : 3) * (index + 1)}deg)` }}>
-                                        <div className="aspect-square bg-gray-50 overflow-hidden relative rounded-sm">
-                                            <img src={photo.url} className="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-1000 scale-110 group-hover:scale-100" />
-                                            <div className="absolute inset-0 bg-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-                                        </div>
-                                        <div className="mt-8 text-center">
-                                            <span className="font-serif italic text-gray-500 text-xl tracking-wide">{photo.caption}</span>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </section>
-
-                        <section className="text-center relative">
-                            <div className="bg-white rounded-[4rem] p-20 border-t-8 border-pink-100 shadow-[0_50px_100px_-20px_rgba(236,72,153,0.1)] max-w-2xl mx-auto">
-                                <div className="flex justify-center mb-10 text-pink-500">
-                                    <i data-lucide="heart" className="w-16 h-16 fill-current animate-bounce"></i>
-                                </div>
-                                <div className="min-h-[150px] flex items-center justify-center">
-                                    <p className="text-4xl font-serif italic text-gray-800 leading-tight" key={complimentIndex}>
-                                        "{compliments[complimentIndex]}"
-                                    </p>
-                                </div>
-                                <button onClick={nextCompliment} className="mt-12 bg-gray-900 text-white px-16 py-6 rounded-full hover:bg-pink-600 transition-all shadow-2xl font-bold tracking-widest text-xs uppercase scale-110 active:scale-95">
-                                    Sevgiyi Arttır ✨
-                                </button>
-                                <div className="mt-14 flex items-center justify-center gap-5">
-                                    <div className="h-2 flex-1 bg-gray-50 rounded-full overflow-hidden shadow-inner">
-                                        <div className="h-full bg-gradient-to-r from-pink-300 to-pink-500 transition-all duration-500" style={{ width: `${(clicks % 10) * 10}%` }} />
-                                    </div>
-                                    <span className="text-sm text-pink-400 font-black tracking-tighter">LVL {Math.floor(clicks/10) + 1}</span>
-                                </div>
-                            </div>
-                        </section>
-
-                        <section className="max-w-2xl mx-auto text-center bg-gray-950 p-16 rounded-[4rem] shadow-3xl relative overflow-hidden group">
-                            <div className="absolute inset-0 bg-gradient-to-br from-pink-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
-                            <div className="relative z-10">
-                                <h2 className="text-4xl font-serif text-white mb-4">Dilek Fenerleri</h2>
-                                <p className="text-pink-200/40 text-xs mb-12 tracking-[0.4em] uppercase font-bold">Bir hayal kur ve gönder</p>
-                                <form onSubmit={releaseWish} className="relative mb-16">
-                                    <input type="text" value={currentWish} onChange={(e) => setCurrentWish(e.target.value)} placeholder="Buraya bir dilek fısılda..."
-                                        className="w-full bg-white/5 border border-white/10 rounded-full px-10 py-6 focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all text-white placeholder:text-white/20 text-xl font-light"
-                                    />
-                                    <button type="submit" className="absolute right-4 top-4 p-4 bg-pink-500 text-white rounded-full hover:bg-pink-400 shadow-xl transition-all active:scale-75">
-                                        <i data-lucide="send" className="w-6 h-6"></i>
-                                    </button>
-                                </form>
-                                <div className="flex flex-wrap justify-center gap-5">
-                                    {wishes.map(wish => (
-                                        <div key={wish.id} className="animate-float py-4 px-8 bg-white/5 rounded-2xl text-sm text-pink-100 border border-white/5 flex items-center gap-3 backdrop-blur-md">
-                                            <i data-lucide="star" className="w-4 h-4 text-amber-400 fill-current"></i> {wish.text}
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        </section>
-                    </main>
-
-                    {message && (
-                        <div className="fixed bottom-16 left-1/2 -translate-x-1/2 bg-gray-900 text-white px-12 py-6 rounded-3xl shadow-[0_30px_60px_-12px_rgba(0,0,0,0.5)] z-[100] flex items-center gap-5 border border-white/10 animate-in fade-in slide-in-from-bottom-10">
-                            <i data-lucide="sparkles" className="w-6 h-6 text-pink-400"></i>
-                            <span className="text-sm font-bold tracking-wide">{message}</span>
-                        </div>
-                    )}
-
-                    <footer className="bg-white py-48 px-6 border-t border-pink-50 text-center relative overflow-hidden">
-                        <div className="max-w-4xl mx-auto space-y-16 relative z-10">
-                            <i data-lucide="map-pin" className="w-10 h-10 text-pink-100 mx-auto"></i>
-                            <div className="space-y-8">
-                                <p className="text-gray-900 font-serif text-5xl italic leading-tight px-4">"İyi ki varsın Duru."</p>
-                                <p className="text-gray-400 text-[10px] uppercase tracking-[1em] font-black">Always & Forever</p>
-                            </div>
-                        </div>
+                    <footer className="mt-40 text-center opacity-40 py-16">
+                        <div className="w-16 h-1 bg-pink-100 mx-auto mb-8 rounded-full"></div>
+                        <p className="font-serif italic text-2xl tracking-widest text-gray-400">The Discovery of Duru</p>
                     </footer>
                 </div>
             );
