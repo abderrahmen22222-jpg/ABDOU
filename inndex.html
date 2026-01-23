@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Suvam | My Safe Haven</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Inter:wght@300;400;500&family=Playfair+Display:italic,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --soft-pink: #fff5f7;
+            --ethereal-gold: #fdf2d5;
+            --deep-rose: #a44a5e;
+            --angelic-white: #ffffff;
+        }
+
+        body {
+            background: linear-gradient(135deg, #fff5f7 0%, #fef9e7 100%);
+            font-family: 'Inter', sans-serif;
+            color: #4a4a4a;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        .font-serif { font-family: 'Playfair Display', serif; }
+        .font-cursive { font-family: 'Dancing Script', cursive; }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 8px 32px rgba(219, 180, 180, 0.1);
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 1s ease-out;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Floating Animation */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .float-anim {
+            animation: float 4s ease-in-out infinite;
+        }
+
+        /* Twinkling Stars */
+        #canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .glow-text {
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 5px rgba(164, 74, 94, 0.2);
+        }
+
+        .heart-btn {
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .heart-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(164, 74, 94, 0.15);
+        }
+
+        .nepal-accent {
+            background: linear-gradient(to right, #dc143c, #003893);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: bold;
+        }
+
+        .interactive-line {
+            min-height: 3rem;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="canvas"></canvas>
+
+    <!-- Hero Section -->
+    <section class="min-h-screen flex flex-col items-center justify-center relative px-6 text-center">
+        <div class="float-anim mb-4">
+            <svg class="w-12 h-12 text-rose-300" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+            </svg>
+        </div>
+        <h1 class="font-serif text-5xl md:text-7xl mb-4 glow-text italic">Suvam</h1>
+        <p class="font-cursive text-2xl md:text-3xl text-rose-400 mb-8">The first one who truly saw me.</p>
+        <div class="max-w-2xl text-lg text-gray-600 leading-relaxed font-light">
+            Before we even met, I fell for the mind, the kindness, and the laughter. 
+            In a world that felt too loud, you were the soft silence I always needed.
+        </div>
+        <a href="#story" class="mt-12 text-rose-400 animate-bounce cursor-pointer">
+            <svg class="w-8 h-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+            </svg>
+        </a>
+    </section>
+
+    <!-- The Story Section -->
+    <section id="story" class="py-24 px-6 max-w-4xl mx-auto space-y-32">
+        
+        <!-- Invisible to Seen -->
+        <div class="reveal flex flex-col md:flex-row items-center gap-12">
+            <div class="glass-card p-10 rounded-3xl md:w-full">
+                <h3 class="font-serif text-3xl mb-4 italic text-rose-800">When I felt invisible...</h3>
+                <p class="leading-relaxed text-gray-700">
+                    I spent so long moving through the world like a ghost, unnoticed and unheard. Then you came along. You didn't just look—you <i>noticed</i>. You saw the parts of me I tried to hide, and instead of turning away, you stayed.
+                </p>
+            </div>
+        </div>
+
+        <!-- Safe Space -->
+        <div class="reveal flex flex-col md:flex-row-reverse items-center gap-12">
+            <div class="glass-card p-10 rounded-3xl md:w-full">
+                <h3 class="font-serif text-3xl mb-4 italic text-rose-800">My first safe space</h3>
+                <p class="leading-relaxed text-gray-700">
+                    You gave me something I never knew existed: a safe space to speak. For the first time in my life, I wasn't afraid of being "too much" or "not enough." You made it easy to open up. You are my first—the first person I ever truly let in.
+                </p>
+            </div>
+        </div>
+
+        <!-- The Real Me -->
+        <div class="reveal glass-card p-10 rounded-3xl text-center">
+            <h3 class="font-serif text-3xl mb-6 italic text-rose-800">You care about the 'Real' me</h3>
+            <p class="leading-relaxed text-gray-700 max-w-2xl mx-auto">
+                It’s the little check-ins, the way you ask how I’m doing and actually wait for the answer. Your effortless kindness isn’t just a trait; it’s a gift you give to everyone around you, especially me. You make the world feel a little less lonely.
+            </p>
+            <div class="mt-8 inline-block px-4 py-1 rounded-full bg-rose-50 text-rose-400 text-sm font-medium tracking-widest uppercase">
+                From Nepal with Love
+            </div>
+        </div>
+
+    </section>
+
+    <!-- Interactive Section -->
+    <section class="py-24 px-6 text-center bg-white bg-opacity-40">
+        <h2 class="font-serif text-4xl mb-12 italic">A Little Note for You</h2>
+        <div class="max-w-xl mx-auto glass-card p-8 rounded-2xl relative overflow-hidden">
+            <div id="message-container" class="interactive-line flex items-center justify-center italic text-xl text-gray-600 font-serif">
+                Click the heart to reveal a secret...
+            </div>
+            <button id="reveal-btn" class="heart-btn mt-8 bg-rose-400 text-white p-4 rounded-full inline-flex items-center justify-center">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+            </button>
+        </div>
+    </section>
+
+    <!-- Final Message -->
+    <footer class="py-24 px-6 text-center">
+        <div class="reveal">
+            <h2 class="font-serif text-3xl md:text-4xl mb-6 italic">To grow, to laugh, to just 'be'.</h2>
+            <p class="text-gray-600 max-w-xl mx-auto leading-relaxed">
+                Everything feels right when we talk. You challenge me to be better, not because you ask me to, but because you inspire me to. 
+                Thank you for being you, Suvam.
+            </p>
+            <div class="mt-12 font-cursive text-4xl text-rose-300">
+                Forever Grateful.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- Starry Background Logic ---
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Star {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2;
+                this.speed = Math.random() * 0.5;
+                this.alpha = Math.random();
+                this.direction = Math.random() > 0.5 ? 1 : -1;
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 182, 193, ${this.alpha})`;
+                ctx.fill();
+            }
+            update() {
+                this.alpha += 0.01 * this.direction;
+                if (this.alpha <= 0 || this.alpha >= 1) this.direction *= -1;
+                this.y -= this.speed;
+                if (this.y < 0) this.reset();
+            }
+        }
+
+        for (let i = 0; i < 100; i++) {
+            stars.push(new Star());
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            stars.forEach(star => {
+                star.update();
+                star.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        // --- Scroll Reveal Logic ---
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // --- Interactive Messages ---
+        const messages = [
+            "You make the world feel safe.",
+            "Falling for your soul was the easiest thing I've ever done.",
+            "You are the best person I've ever met.",
+            "Talking to you makes everything feel 'right'.",
+            "Thank you for seeing the real me.",
+            "You're my first, in all the ways that matter.",
+            "Your kindness is a masterpiece."
+        ];
+
+        const btn = document.getElementById('reveal-btn');
+        const container = document.getElementById('message-container');
+        let index = 0;
+
+        btn.addEventListener('click', () => {
+            container.style.opacity = 0;
+            setTimeout(() => {
+                container.textContent = messages[index];
+                container.style.opacity = 1;
+                index = (index + 1) % messages.length;
+            }, 300);
+
+            // Create floating mini-hearts on click
+            for(let i=0; i<5; i++) {
+                createHeart();
+            }
+        });
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.innerHTML = '❤';
+            heart.style.position = 'fixed';
+            heart.style.left = (Math.random() * 100) + 'vw';
+            heart.style.bottom = '-5vh';
+            heart.style.color = '#fda4af';
+            heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+            heart.style.opacity = '0.8';
+            heart.style.zIndex = '1000';
+            heart.style.transition = 'all 3s linear';
+            document.body.appendChild(heart);
+
+            setTimeout(() => {
+                heart.style.transform = `translateY(-110vh) translateX(${(Math.random() - 0.5) * 100}px)`;
+                heart.style.opacity = '0';
+            }, 50);
+
+            setTimeout(() => heart.remove(), 3000);
+        }
+    </script>
+</body>
+</html>
