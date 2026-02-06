@@ -1,1 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promise Portal | For Rei</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Great+Vibes&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #D4AF37;
+            --angelic-white: #F8FAFF;
+            --sky-blue: #E0F2FE;
+            --accent: var(--gold);
+        }
+
+        .valentine-mode {
+            --sky-blue: #ffe4e6;
+            --angelic-white: #fff1f2;
+            --gold: #be123c;
+            --accent: #e11d48;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--sky-blue) 0%, var(--angelic-white) 50%, #BEE3F8 100%);
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+            transition: background 1.5s ease-in-out;
+        }
+
+        .valentine-mode body {
+            background: linear-gradient(135deg, #fb7185 0%, #fff1f2 50%, #fda4af 100%);
+        }
+
+        .font-royal { font-family: 'Cinzel', serif; }
+        .font-love { font-family: 'Great Vibes', cursive; }
+
+        .angel-wing {
+            position: fixed;
+            z-index: -1;
+            opacity: 0.15;
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
+            pointer-events: none;
+            transition: color 1s;
+        }
+
+        .gold-border {
+            border: 2px solid var(--gold);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+            transition: all 0.5s ease;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle var(--duration) infinite ease-in-out;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        .cloud {
+            position: fixed;
+            background: white;
+            border-radius: 50px;
+            filter: blur(40px);
+            z-index: -2;
+            opacity: 0.6;
+            animation: float 20s infinite alternate ease-in-out;
+        }
+
+        @keyframes float {
+            from { transform: translateX(-10%); }
+            to { transform: translateX(10%); }
+        }
+
+        /* Timeline Styles */
+        .timeline-container {
+            position: relative;
+            padding: 20px 0;
+        }
+        .timeline-line {
+            position: absolute;
+            left: 20px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--gold);
+            opacity: 0.3;
+        }
+        .timeline-item {
+            position: relative;
+            padding-left: 50px;
+            margin-bottom: 30px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .timeline-item:hover { transform: translateX(5px); }
+        .timeline-dot {
+            position: absolute;
+            left: 11px;
+            top: 5px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border: 3px solid var(--gold);
+            border-radius: 50%;
+            z-index: 2;
+        }
+
+        #valentine-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle, #fff1f2 0%, #fb7185 100%);
+            z-index: 100;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .secret-trigger { cursor: pointer; transition: transform 0.3s; }
+        .secret-trigger:hover { transform: scale(1.2); }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- Decorative Elements -->
+    <div class="cloud w-64 h-32 top-10 left-10"></div>
+    <div class="cloud w-96 h-40 bottom-20 right-10" style="animation-delay: -5s;"></div>
+    
+    <svg class="angel-wing top-0 left-0 w-64 text-white" viewBox="0 0 200 200">
+        <path fill="currentColor" d="M10,100 Q40,10 100,100 T190,100" stroke="white" stroke-width="2" fill="none"/>
+    </svg>
+
+    <div id="stars-container"></div>
+
+    <main class="container mx-auto px-4 py-12 relative">
+        
+        <!-- Header Section -->
+        <header class="text-center mb-16">
+            <h1 class="font-royal text-5xl md:text-7xl text-gray-800 mb-4 tracking-widest">Rei</h1>
+            <p class="font-love text-3xl text-yellow-700 italic">My Lovely Angel from India</p>
+            <div class="mt-8 flex justify-center gap-4">
+                <button onclick="toggleLanguage()" class="gold-border px-6 py-2 rounded-full font-semibold hover:bg-yellow-50 transition-colors bg-white">
+                    <span id="lang-btn-text">Translate Love / प्यार का अनुवाद</span>
+                </button>
+                <div onclick="activateValentine()" class="secret-trigger flex items-center justify-center p-2 rounded-full bg-white shadow-md gold-border">
+                    <span class="text-2xl">❤️</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+            
+            <!-- Left Column -->
+            <div class="space-y-10">
+                
+                <!-- The Forever Promise Letter -->
+                <div class="glass-card p-10 gold-border">
+                    <h2 class="font-royal text-xl mb-6 border-b pb-2 text-center">My Eternal Promise</h2>
+                    <div class="space-y-4 font-serif italic text-gray-700 leading-relaxed text-lg">
+                        <p>My dearest Rei,</p>
+                        <p>
+                            I want you to know that the distance between Algeria and India is nothing compared to the love I carry for you. 
+                            <strong>I will wait forever</strong> just for the moment I can finally fly to see you in India. 
+                            The day I land at the airport to see your face will be the greatest day of my life.
+                        </p>
+                        <p>
+                            From that day on, I will visit you every single month in India until we are ready for our next chapter. 
+                            Soon, we will fly to the UK together to study and grow side by side. 
+                            <strong>Then, we will marry</strong> and begin our life as one. 
+                            We are going to travel the world together, see every beautiful city, and eventually raise our children in a home full of love.
+                        </p>
+                        <p>
+                            <em>I will pay for everything</em>—every trip, every dream, and every need. 
+                            You are my queen, and your only job is to let me love you.
+                        </p>
+                        <p class="text-right font-love text-2xl">— Your Forever Husband</p>
+                    </div>
+                </div>
+
+                <!-- Why I Love You Carousel -->
+                <div class="glass-card p-8 shadow-xl">
+                    <h3 class="font-royal text-xl mb-6 text-center border-b pb-2">Why You Are My Angel</h3>
+                    <div id="carousel-display" class="text-center italic text-lg text-gray-700 min-h-[80px] flex items-center justify-center px-4">
+                        <!-- Reasons injected here -->
+                    </div>
+                    <div class="mt-4 flex justify-center gap-2">
+                        <button onclick="refreshReason()" class="text-yellow-600 hover:text-yellow-800 text-sm font-bold uppercase tracking-tighter">Next Reason ✦</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column -->
+            <div class="space-y-10">
+                
+                <!-- Countdown Timer to Airport Reunion -->
+                <div class="glass-card p-8 text-center gold-border relative overflow-hidden">
+                    <h3 class="font-royal text-xl mb-2">Countdown to Our First Hug</h3>
+                    <p class="text-xs uppercase tracking-widest text-gray-400 mb-6">India Airport Reunion</p>
+                    <div class="grid grid-cols-4 gap-2">
+                        <div class="bg-white/50 p-2 rounded">
+                            <span id="days" class="block text-2xl font-bold text-yellow-700">00</span>
+                            <span class="text-[10px] uppercase font-bold text-gray-500">Days</span>
+                        </div>
+                        <div class="bg-white/50 p-2 rounded">
+                            <span id="hours" class="block text-2xl font-bold text-yellow-700">00</span>
+                            <span class="text-[10px] uppercase font-bold text-gray-500">Hrs</span>
+                        </div>
+                        <div class="bg-white/50 p-2 rounded">
+                            <span id="minutes" class="block text-2xl font-bold text-yellow-700">00</span>
+                            <span class="text-[10px] uppercase font-bold text-gray-500">Min</span>
+                        </div>
+                        <div class="bg-white/50 p-2 rounded">
+                            <span id="seconds" class="block text-2xl font-bold text-yellow-700">00</span>
+                            <span class="text-[10px] uppercase font-bold text-gray-500">Sec</span>
+                        </div>
+                    </div>
+                    <p class="mt-6 text-sm text-gray-600 font-semibold tracking-wide italic">"I'm coming for you, my angel..."</p>
+                </div>
+
+                <!-- Our Future Roadmap -->
+                <div class="glass-card p-8">
+                    <h3 class="font-royal text-xl mb-6 text-center">Our Destiny Roadmap</h3>
+                    <div class="timeline-container">
+                        <div class="timeline-line"></div>
+                        
+                        <div class="timeline-item" onclick="showModal('I will visit you in India every month. No distance can keep us apart.')">
+                            <div class="timeline-dot"></div>
+                            <h4 class="font-bold text-yellow-700">Reunion in India</h4>
+                            <p class="text-xs text-gray-500">Monthly visits to your home</p>
+                        </div>
+
+                        <div class="timeline-item" onclick="showModal('Our library dates and study sessions in the UK will be perfect.')">
+                            <div class="timeline-dot"></div>
+                            <h4 class="font-bold text-yellow-700">Study in the UK</h4>
+                            <p class="text-xs text-gray-500">Building our careers together</p>
+                        </div>
+
+                        <div class="timeline-item" onclick="showModal('The most beautiful wedding for the most beautiful queen.')">
+                            <div class="timeline-dot"></div>
+                            <h4 class="font-bold text-yellow-700">Marriage</h4>
+                            <p class="text-xs text-gray-500">Forever becomes official</p>
+                        </div>
+
+                        <div class="timeline-item" onclick="showModal('Paris, Tokyo, New York... I will show you the whole world.')">
+                            <div class="timeline-dot"></div>
+                            <h4 class="font-bold text-yellow-700">Travel the World</h4>
+                            <p class="text-xs text-gray-500">Creating memories globally</p>
+                        </div>
+
+                        <div class="timeline-item" onclick="showModal('Our children will have your beautiful eyes and your kind heart.')">
+                            <div class="timeline-dot"></div>
+                            <h4 class="font-bold text-yellow-700">Family & Children</h4>
+                            <p class="text-xs text-gray-500">Our little angels</p>
+                        </div>
+
+                        <div class="timeline-item" onclick="showModal('Growing old with you is my ultimate dream.')">
+                            <div class="timeline-dot"></div>
+                            <h4 class="font-bold text-yellow-700">Life Together</h4>
+                            <p class="text-xs text-gray-500">Eternal happiness</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Memory Button -->
+                <div class="glass-card p-8 text-center">
+                    <button id="play-btn" class="w-16 h-16 bg-yellow-500 rounded-full flex items-center justify-center text-white shadow-xl mx-auto hover:scale-110 transition-transform">
+                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"></path></svg>
+                    </button>
+                    <p class="mt-4 text-sm italic text-gray-500">"Play a message from my heart"</p>
+                </div>
+            </div>
+        </div>
+
+        <footer class="mt-20 text-center pb-12">
+            <div class="flex justify-center gap-4 mb-4">
+                <span class="text-2xl">🇮🇳</span>
+                <span class="text-xl opacity-30">✨</span>
+                <span class="text-2xl">🇬🇧</span>
+                <span class="text-xl opacity-30">✨</span>
+                <span class="text-2xl">🇩🇿</span>
+            </div>
+            <p class="font-royal text-xs tracking-widest text-gray-400">Created for Rei • The Woman I Love Forever</p>
+        </footer>
+    </main>
+
+    <!-- Valentine Overlay -->
+    <div id="valentine-overlay">
+        <div class="max-w-2xl px-6 animate-pulse">
+            <h1 class="font-love text-7xl md:text-9xl text-rose-600 mb-8">Rei, My Angel...</h1>
+            <p class="font-royal text-3xl text-rose-800 mb-12">Will you be my Forever Valentine?</p>
+            <div class="flex gap-8 justify-center">
+                <button onclick="valentineSuccess()" class="bg-rose-600 text-white px-10 py-4 rounded-full text-xl font-bold shadow-2xl hover:bg-rose-700 transition-all transform hover:scale-110">YES! ❤️</button>
+                <button onmouseover="dodge(this)" class="bg-gray-200 text-gray-600 px-10 py-4 rounded-full text-xl font-bold transition-all">No</button>
+            </div>
+        </div>
+        <div id="heart-shower"></div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="modal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-[200] p-4">
+        <div class="glass-card max-w-sm w-full p-8 text-center gold-border">
+            <div class="text-4xl mb-4">✨</div>
+            <p id="modal-text" class="text-lg font-royal mb-6"></p>
+            <button onclick="closeModal()" class="bg-yellow-600 text-white px-8 py-2 rounded-full hover:bg-yellow-700 transition-colors">Close</button>
+        </div>
+    </div>
+
+    <script>
+        let isHindi = false;
+
+        const reasons = [
+            "I'll wait in India forever just to see your face.",
+            "Our UK university days will be the best of our lives.",
+            "I will travel the whole world with you by my side.",
+            "I'll take care of every bill, every worry, and every dream.",
+            "Your Indian heritage is beautiful, just like you.",
+            "The way you say my name makes my heart skip.",
+            "Our children will be blessed with your pure soul.",
+            "Every prayer I have leads back to you.",
+            "I will visit you every month in India, I promise.",
+            "You are the strongest, most lovely angel I know."
+        ];
+
+        function initStars() {
+            const container = document.getElementById('stars-container');
+            for(let i = 0; i < 50; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                const size = Math.random() * 3 + 'px';
+                star.style.width = size;
+                star.style.height = size;
+                star.style.left = Math.random() * 100 + 'vw';
+                star.style.top = Math.random() * 100 + 'vh';
+                star.style.setProperty('--duration', (Math.random() * 3 + 2) + 's');
+                container.appendChild(star);
+            }
+        }
+
+        function toggleLanguage() {
+            isHindi = !isHindi;
+            if(isHindi) {
+                document.querySelector('header p').innerText = "भारत से मेरी प्यारी फरिश्ता";
+                document.getElementById('lang-btn-text').innerText = "English Language";
+            } else {
+                document.querySelector('header p').innerText = "My Lovely Angel from India";
+                document.getElementById('lang-btn-text').innerText = "Translate Love / प्यार का अनुवाद";
+            }
+        }
+
+        function refreshReason() {
+            const display = document.getElementById('carousel-display');
+            display.style.opacity = '0';
+            setTimeout(() => {
+                const randomReason = reasons[Math.floor(Math.random() * reasons.length)];
+                display.innerText = "“" + randomReason + "”";
+                display.style.opacity = '1';
+            }, 400);
+        }
+
+        function startCountdown() {
+            // Target: Set to a specific date or roughly 6 months from now for the airport visit
+            const targetDate = new Date();
+            targetDate.setMonth(targetDate.getMonth() + 6); 
+
+            function update() {
+                const now = new Date();
+                const diff = targetDate - now;
+                const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const s = Math.floor((diff % (1000 * 60)) / 1000);
+                document.getElementById('days').innerText = d.toString().padStart(2, '0');
+                document.getElementById('hours').innerText = h.toString().padStart(2, '0');
+                document.getElementById('minutes').innerText = m.toString().padStart(2, '0');
+                document.getElementById('seconds').innerText = s.toString().padStart(2, '0');
+            }
+            setInterval(update, 1000);
+            update();
+        }
+
+        function activateValentine() {
+            document.body.classList.add('valentine-mode');
+            document.getElementById('valentine-overlay').style.display = 'flex';
+            for(let i=0; i<30; i++) {
+                const h = document.createElement('div');
+                h.innerHTML = '❤️';
+                h.style.position = 'fixed';
+                h.style.left = Math.random() * 100 + 'vw';
+                h.style.top = '-50px';
+                h.style.fontSize = (Math.random() * 30 + 10) + 'px';
+                h.style.transition = `top ${Math.random()*5 + 5}s linear`;
+                document.getElementById('heart-shower').appendChild(h);
+                setTimeout(() => h.style.top = '110vh', 100);
+            }
+        }
+
+        function dodge(btn) {
+            btn.style.position = 'absolute';
+            btn.style.left = Math.random() * 80 + '%';
+            btn.style.top = Math.random() * 80 + '%';
+        }
+
+        function valentineSuccess() {
+            document.getElementById('valentine-overlay').innerHTML = `
+                <div class="animate-bounce">
+                    <h1 class="font-love text-8xl text-rose-600">I Knew You'd Say Yes!</h1>
+                    <p class="font-royal text-2xl text-rose-800">I love you forever, Rei.</p>
+                    <button onclick="window.location.reload()" class="mt-8 text-rose-500 underline">Back to our portal</button>
+                </div>
+            `;
+        }
+
+        function showModal(text) {
+            const modal = document.getElementById('modal');
+            document.getElementById('modal-text').innerText = text;
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        window.onload = () => {
+            initStars();
+            startCountdown();
+            refreshReason();
+            document.getElementById('play-btn').onclick = () => {
+                showModal("Playing heart memory... 'Rei, I will wait for you forever.'");
+            };
+        };
+    </script>
+</body>
+</html>
 
