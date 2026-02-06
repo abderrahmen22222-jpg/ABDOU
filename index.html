@@ -27,6 +27,7 @@
             overflow-x: hidden;
             scroll-behavior: smooth;
             transition: background 1.5s ease-in-out;
+            cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' style='fill:red'><path d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/></svg>"), auto;
         }
 
         .valentine-mode body {
@@ -86,7 +87,6 @@
             to { transform: translateX(10%); }
         }
 
-        /* Timeline Styles */
         .timeline-container {
             position: relative;
             padding: 20px 0;
@@ -132,13 +132,51 @@
             text-align: center;
         }
 
-        .secret-trigger { cursor: pointer; transition: transform 0.3s; }
-        .secret-trigger:hover { transform: scale(1.2); }
+        .plane-animation {
+            position: absolute;
+            font-size: 24px;
+            pointer-events: none;
+            z-index: 10;
+            filter: drop-shadow(0 0 5px white);
+        }
+
+        .gift-box {
+            cursor: pointer;
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .gift-box:hover { transform: scale(1.1) rotate(5deg); }
+
+        /* Hidden message tooltip */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: var(--gold);
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -60px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-family: 'Great Vibes', cursive;
+            font-size: 1.2rem;
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
     </style>
 </head>
 <body class="text-gray-800">
 
-    <!-- Decorative Elements -->
     <div class="cloud w-64 h-32 top-10 left-10"></div>
     <div class="cloud w-96 h-40 bottom-20 right-10" style="animation-delay: -5s;"></div>
     
@@ -147,236 +185,254 @@
     </svg>
 
     <div id="stars-container"></div>
+    <div id="plane-container"></div>
 
     <main class="container mx-auto px-4 py-12 relative">
         
         <!-- Header Section -->
         <header class="text-center mb-16">
-            <h1 class="font-royal text-5xl md:text-7xl text-gray-800 mb-4 tracking-widest">Rei</h1>
+            <h1 class="font-royal text-5xl md:text-7xl text-gray-800 mb-4 tracking-widest tooltip">
+                Rei
+                <span class="tooltiptext">I Love You</span>
+            </h1>
+            <p id="time-greeting" class="text-lg font-semibold text-gray-500 mb-2 uppercase tracking-widest">Welcome Back</p>
             <p class="font-love text-3xl text-yellow-700 italic">My Lovely Angel from India</p>
             <div class="mt-8 flex justify-center gap-4">
                 <button onclick="toggleLanguage()" class="gold-border px-6 py-2 rounded-full font-semibold hover:bg-yellow-50 transition-colors bg-white">
                     <span id="lang-btn-text">Translate Love / प्यार का अनुवाद</span>
                 </button>
-                <div onclick="activateValentine()" class="secret-trigger flex items-center justify-center p-2 rounded-full bg-white shadow-md gold-border">
+                <div onclick="activateValentine()" class="cursor-pointer flex items-center justify-center p-2 rounded-full bg-white shadow-md gold-border hover:scale-110 transition-transform">
                     <span class="text-2xl">❤️</span>
                 </div>
             </div>
         </header>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
             
-            <!-- Left Column -->
-            <div class="space-y-10">
-                
-                <!-- The Forever Promise Letter -->
+            <!-- Left Column: Core Promises -->
+            <div class="space-y-8">
                 <div class="glass-card p-10 gold-border">
                     <h2 class="font-royal text-xl mb-6 border-b pb-2 text-center">My Eternal Promise</h2>
                     <div class="space-y-4 font-serif italic text-gray-700 leading-relaxed text-lg">
-                        <p>My dearest Rei,</p>
-                        <p>
-                            I want you to know that the distance between Algeria and India is nothing compared to the love I carry for you. 
-                            <strong>I will wait forever</strong> just for the moment I can finally fly to see you in India. 
-                            The day I land at the airport to see your face will be the greatest day of my life.
-                        </p>
-                        <p>
-                            From that day on, I will visit you every single month in India until we are ready for our next chapter. 
-                            Soon, we will fly to the UK together to study and grow side by side. 
-                            <strong>Then, we will marry</strong> and begin our life as one. 
-                            We are going to travel the world together, see every beautiful city, and eventually raise our children in a home full of love.
-                        </p>
-                        <p>
-                            <em>I will pay for everything</em>—every trip, every dream, and every need. 
-                            You are my queen, and your only job is to let me love you.
-                        </p>
+                        <p>My dearest Rei, I want you to know that the distance between Algeria and India is nothing compared to the love I carry for you. <strong>I will wait forever</strong> just for the moment I can finally fly to see you.</p>
+                        <p>Soon, we will fly to the UK together. <strong>Then, we will marry</strong> and begin our life as one. <em>I will pay for everything</em>—you are my queen.</p>
                         <p class="text-right font-love text-2xl">— Your Forever Husband</p>
                     </div>
                 </div>
 
-                <!-- Why I Love You Carousel -->
-                <div class="glass-card p-8 shadow-xl">
-                    <h3 class="font-royal text-xl mb-6 text-center border-b pb-2">Why You Are My Angel</h3>
-                    <div id="carousel-display" class="text-center italic text-lg text-gray-700 min-h-[80px] flex items-center justify-center px-4">
-                        <!-- Reasons injected here -->
-                    </div>
-                    <div class="mt-4 flex justify-center gap-2">
-                        <button onclick="refreshReason()" class="text-yellow-600 hover:text-yellow-800 text-sm font-bold uppercase tracking-tighter">Next Reason ✦</button>
-                    </div>
+                <!-- Daily Gift Box -->
+                <div class="glass-card p-8 text-center bg-yellow-50/30 border-2 border-dashed border-yellow-400">
+                    <h3 class="font-royal text-lg mb-4 uppercase tracking-wider">Today's Virtual Gift</h3>
+                    <div id="gift-container" class="gift-box text-6xl mb-4" onclick="openGift()">🎁</div>
+                    <p id="gift-status" class="text-sm text-gray-500 italic">Click to reveal your daily surprise</p>
+                </div>
+
+                <!-- Airport Checklist -->
+                <div class="glass-card p-8">
+                    <h3 class="font-royal text-xl mb-4 text-center border-b pb-2">Airport Meeting Guide</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-center gap-3">
+                            <input type="checkbox" checked disabled class="accent-yellow-600">
+                            <span class="text-sm text-gray-600">Book the flight to India</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <input type="checkbox" class="accent-yellow-600">
+                            <span class="text-sm text-gray-600">Buy the biggest bouquet of flowers</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <input type="checkbox" class="accent-yellow-600">
+                            <span class="text-sm text-gray-600">Don't let go of the first hug</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <input type="checkbox" class="accent-yellow-600">
+                            <span class="text-sm text-gray-600">Take a photo of our joined hands</span>
+                        </li>
+                    </ul>
                 </div>
             </div>
 
-            <!-- Right Column -->
-            <div class="space-y-10">
-                
-                <!-- Countdown Timer to Airport Reunion -->
-                <div class="glass-card p-8 text-center gold-border relative overflow-hidden">
-                    <h3 class="font-royal text-xl mb-2">Countdown to Our First Hug</h3>
+            <!-- Middle Column: Countdown & Tools -->
+            <div class="space-y-8">
+                <!-- Countdown -->
+                <div class="glass-card p-8 text-center gold-border relative overflow-hidden bg-white/40">
+                    <h3 class="font-royal text-xl mb-2">Counting Down to Us</h3>
                     <p class="text-xs uppercase tracking-widest text-gray-400 mb-6">India Airport Reunion</p>
                     <div class="grid grid-cols-4 gap-2">
-                        <div class="bg-white/50 p-2 rounded">
+                        <div class="bg-white/80 p-2 rounded shadow-sm">
                             <span id="days" class="block text-2xl font-bold text-yellow-700">00</span>
                             <span class="text-[10px] uppercase font-bold text-gray-500">Days</span>
                         </div>
-                        <div class="bg-white/50 p-2 rounded">
+                        <div class="bg-white/80 p-2 rounded shadow-sm">
                             <span id="hours" class="block text-2xl font-bold text-yellow-700">00</span>
                             <span class="text-[10px] uppercase font-bold text-gray-500">Hrs</span>
                         </div>
-                        <div class="bg-white/50 p-2 rounded">
+                        <div class="bg-white/80 p-2 rounded shadow-sm">
                             <span id="minutes" class="block text-2xl font-bold text-yellow-700">00</span>
                             <span class="text-[10px] uppercase font-bold text-gray-500">Min</span>
                         </div>
-                        <div class="bg-white/50 p-2 rounded">
+                        <div class="bg-white/80 p-2 rounded shadow-sm">
                             <span id="seconds" class="block text-2xl font-bold text-yellow-700">00</span>
                             <span class="text-[10px] uppercase font-bold text-gray-500">Sec</span>
                         </div>
                     </div>
-                    <p class="mt-6 text-sm text-gray-600 font-semibold tracking-wide italic">"I'm coming for you, my angel..."</p>
                 </div>
 
-                <!-- Our Future Roadmap -->
+                <!-- World Trip Budget Tracker -->
                 <div class="glass-card p-8">
-                    <h3 class="font-royal text-xl mb-6 text-center">Our Destiny Roadmap</h3>
-                    <div class="timeline-container">
-                        <div class="timeline-line"></div>
-                        
-                        <div class="timeline-item" onclick="showModal('I will visit you in India every month. No distance can keep us apart.')">
-                            <div class="timeline-dot"></div>
-                            <h4 class="font-bold text-yellow-700">Reunion in India</h4>
-                            <p class="text-xs text-gray-500">Monthly visits to your home</p>
-                        </div>
-
-                        <div class="timeline-item" onclick="showModal('Our library dates and study sessions in the UK will be perfect.')">
-                            <div class="timeline-dot"></div>
-                            <h4 class="font-bold text-yellow-700">Study in the UK</h4>
-                            <p class="text-xs text-gray-500">Building our careers together</p>
-                        </div>
-
-                        <div class="timeline-item" onclick="showModal('The most beautiful wedding for the most beautiful queen.')">
-                            <div class="timeline-dot"></div>
-                            <h4 class="font-bold text-yellow-700">Marriage</h4>
-                            <p class="text-xs text-gray-500">Forever becomes official</p>
-                        </div>
-
-                        <div class="timeline-item" onclick="showModal('Paris, Tokyo, New York... I will show you the whole world.')">
-                            <div class="timeline-dot"></div>
-                            <h4 class="font-bold text-yellow-700">Travel the World</h4>
-                            <p class="text-xs text-gray-500">Creating memories globally</p>
-                        </div>
-
-                        <div class="timeline-item" onclick="showModal('Our children will have your beautiful eyes and your kind heart.')">
-                            <div class="timeline-dot"></div>
-                            <h4 class="font-bold text-yellow-700">Family & Children</h4>
-                            <p class="text-xs text-gray-500">Our little angels</p>
-                        </div>
-
-                        <div class="timeline-item" onclick="showModal('Growing old with you is my ultimate dream.')">
-                            <div class="timeline-dot"></div>
-                            <h4 class="font-bold text-yellow-700">Life Together</h4>
-                            <p class="text-xs text-gray-500">Eternal happiness</p>
-                        </div>
+                    <h3 class="font-royal text-xl mb-4 text-center">World Trip Fund</h3>
+                    <div class="w-full bg-gray-200 rounded-full h-4 mb-4">
+                        <div class="bg-yellow-500 h-4 rounded-full" style="width: 35%"></div>
+                    </div>
+                    <p class="text-xs text-center text-gray-600 italic">"Working hard to pay for every dream we share"</p>
+                    <div class="flex justify-between mt-2 text-[10px] font-bold uppercase text-gray-400">
+                        <span>Starting</span>
+                        <span>London Trip</span>
+                        <span>World Tour</span>
                     </div>
                 </div>
 
-                <!-- Memory Button -->
-                <div class="glass-card p-8 text-center">
-                    <button id="play-btn" class="w-16 h-16 bg-yellow-500 rounded-full flex items-center justify-center text-white shadow-xl mx-auto hover:scale-110 transition-transform">
-                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"></path></svg>
-                    </button>
-                    <p class="mt-4 text-sm italic text-gray-500">"Play a message from my heart"</p>
+                <!-- Study Timer -->
+                <div class="glass-card p-8 bg-white/30">
+                    <h3 class="font-royal text-xl mb-4 text-center">UK Study Session</h3>
+                    <div class="text-center">
+                        <div id="pomodoro-timer" class="text-4xl font-bold text-gray-700 mb-4">25:00</div>
+                        <div class="flex justify-center gap-4">
+                            <button id="pomo-start" onclick="togglePomodoro()" class="bg-gray-800 text-white px-6 py-1 rounded-full text-sm">Start</button>
+                            <button onclick="resetPomodoro()" class="border border-gray-300 px-6 py-1 rounded-full text-sm">Reset</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Future & Playful -->
+            <div class="space-y-8">
+                <!-- Baby Name Brainstorm -->
+                <div class="glass-card p-8 border-2 border-pink-200 bg-pink-50/20">
+                    <h3 class="font-royal text-xl mb-4 text-center">Future Names</h3>
+                    <div id="baby-names-locked">
+                        <p class="text-center text-xs text-gray-500 mb-4">This section is password protected</p>
+                        <input type="password" id="baby-pass" placeholder="Password: love" class="w-full p-2 rounded border mb-2 text-sm">
+                        <button onclick="unlockNames()" class="w-full bg-pink-400 text-white py-2 rounded-lg text-sm font-bold">Unlock Dreams</button>
+                    </div>
+                    <div id="baby-names-unlocked" class="hidden">
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="p-2 bg-white rounded text-center text-sm font-semibold text-pink-600">Arjun</div>
+                            <div class="p-2 bg-white rounded text-center text-sm font-semibold text-pink-600">Zara</div>
+                            <div class="p-2 bg-white rounded text-center text-sm font-semibold text-pink-600">Kabir</div>
+                            <div class="p-2 bg-white rounded text-center text-sm font-semibold text-pink-600">Amara</div>
+                        </div>
+                        <p class="mt-4 text-[10px] text-center italic">A mix of our worlds...</p>
+                    </div>
+                </div>
+
+                <!-- Roadmap -->
+                <div class="glass-card p-8">
+                    <h3 class="font-royal text-xl mb-6 text-center border-b pb-2">Our Destiny</h3>
+                    <div class="timeline-container scale-90 origin-top">
+                        <div class="timeline-line"></div>
+                        <div class="timeline-item" onclick="showModal('India reunion is my first priority.')"><div class="timeline-dot"></div><h4 class="font-bold text-yellow-700">Reunion</h4></div>
+                        <div class="timeline-item" onclick="showModal('Studying in the UK together.')"><div class="timeline-dot"></div><h4 class="font-bold text-yellow-700">UK Journey</h4></div>
+                        <div class="timeline-item" onclick="showModal('The day we become husband and wife.')"><div class="timeline-dot"></div><h4 class="font-bold text-yellow-700">Marriage</h4></div>
+                    </div>
+                </div>
+
+                <!-- Carousel -->
+                <div class="glass-card p-8 shadow-xl">
+                    <h3 class="font-royal text-center text-sm mb-4 tracking-tighter text-gray-400 uppercase">My Daily Reason</h3>
+                    <div id="carousel-display" class="text-center italic text-lg text-gray-700 min-h-[60px] flex items-center justify-center"></div>
+                    <button onclick="refreshReason()" class="w-full mt-4 text-yellow-600 text-xs font-bold uppercase">✦ Next ✦</button>
                 </div>
             </div>
         </div>
 
         <footer class="mt-20 text-center pb-12">
             <div class="flex justify-center gap-4 mb-4">
-                <span class="text-2xl">🇮🇳</span>
-                <span class="text-xl opacity-30">✨</span>
-                <span class="text-2xl">🇬🇧</span>
-                <span class="text-xl opacity-30">✨</span>
-                <span class="text-2xl">🇩🇿</span>
+                <span class="text-2xl">🇮🇳</span><span class="opacity-30">✨</span><span class="text-2xl">🇬🇧</span><span class="opacity-30">✨</span><span class="text-2xl">🇩🇿</span>
             </div>
-            <p class="font-royal text-xs tracking-widest text-gray-400">Created for Rei • The Woman I Love Forever</p>
+            <p class="font-royal text-[10px] tracking-widest text-gray-400">Created with love for my one and only, Rei</p>
         </footer>
     </main>
 
-    <!-- Valentine Overlay -->
+    <!-- Overlay UI components -->
     <div id="valentine-overlay">
-        <div class="max-w-2xl px-6 animate-pulse">
-            <h1 class="font-love text-7xl md:text-9xl text-rose-600 mb-8">Rei, My Angel...</h1>
-            <p class="font-royal text-3xl text-rose-800 mb-12">Will you be my Forever Valentine?</p>
+        <div class="max-w-2xl px-6 animate-pulse text-center">
+            <h1 class="font-love text-7xl text-rose-600 mb-8">Rei...</h1>
+            <p class="font-royal text-2xl text-rose-800 mb-12">Will you be my Forever Valentine?</p>
             <div class="flex gap-8 justify-center">
-                <button onclick="valentineSuccess()" class="bg-rose-600 text-white px-10 py-4 rounded-full text-xl font-bold shadow-2xl hover:bg-rose-700 transition-all transform hover:scale-110">YES! ❤️</button>
-                <button onmouseover="dodge(this)" class="bg-gray-200 text-gray-600 px-10 py-4 rounded-full text-xl font-bold transition-all">No</button>
+                <button onclick="valentineSuccess()" class="bg-rose-600 text-white px-10 py-4 rounded-full font-bold shadow-2xl hover:scale-110 transition-transform">YES! ❤️</button>
+                <button onmouseover="dodge(this)" class="bg-gray-200 text-gray-600 px-10 py-4 rounded-full font-bold">No</button>
             </div>
         </div>
         <div id="heart-shower"></div>
     </div>
 
-    <!-- Success Modal -->
     <div id="modal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-[200] p-4">
         <div class="glass-card max-w-sm w-full p-8 text-center gold-border">
-            <div class="text-4xl mb-4">✨</div>
             <p id="modal-text" class="text-lg font-royal mb-6"></p>
-            <button onclick="closeModal()" class="bg-yellow-600 text-white px-8 py-2 rounded-full hover:bg-yellow-700 transition-colors">Close</button>
+            <button onclick="closeModal()" class="bg-yellow-600 text-white px-8 py-2 rounded-full">Close</button>
         </div>
     </div>
 
     <script>
-        let isHindi = false;
-
         const reasons = [
             "I'll wait in India forever just to see your face.",
             "Our UK university days will be the best of our lives.",
             "I will travel the whole world with you by my side.",
             "I'll take care of every bill, every worry, and every dream.",
             "Your Indian heritage is beautiful, just like you.",
-            "The way you say my name makes my heart skip.",
-            "Our children will be blessed with your pure soul.",
-            "Every prayer I have leads back to you.",
-            "I will visit you every month in India, I promise.",
-            "You are the strongest, most lovely angel I know."
+            "Every prayer I have leads back to you."
         ];
 
-        function initStars() {
-            const container = document.getElementById('stars-container');
-            for(let i = 0; i < 50; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                const size = Math.random() * 3 + 'px';
-                star.style.width = size;
-                star.style.height = size;
-                star.style.left = Math.random() * 100 + 'vw';
-                star.style.top = Math.random() * 100 + 'vh';
-                star.style.setProperty('--duration', (Math.random() * 3 + 2) + 's');
-                container.appendChild(star);
+        const gifts = [
+            "📜 A poem for you: Your eyes are stars in my dark sky, I love you more as time goes by.",
+            "🎨 [Sketch] A drawing of us walking in a London park.",
+            "😂 [Meme] Me waiting at the airport for 2 years like a statue.",
+            "💍 A digital promise ring: It represents my loyalty to you.",
+            "🍫 Virtual Indian Sweets: Because you are the sweetest thing in my life."
+        ];
+
+        function updateGreeting() {
+            // Get India time (UTC +5.5)
+            const indiaTime = new Date(new Date().getTime() + (330 * 60 * 1000));
+            const hour = indiaTime.getUTCHours();
+            const greeting = document.getElementById('time-greeting');
+            
+            if (hour >= 5 && hour < 12) greeting.innerText = "Good Morning, My Angel";
+            else if (hour >= 12 && hour < 17) greeting.innerText = "Good Afternoon, My Queen";
+            else if (hour >= 17 && hour < 21) greeting.innerText = "Good Evening, My Forever Love";
+            else greeting.innerText = "Goodnight, My Queen (Sweet Dreams)";
+        }
+
+        function openGift() {
+            const container = document.getElementById('gift-container');
+            const status = document.getElementById('gift-status');
+            
+            if(container.innerText === '🎁') {
+                const randomGift = gifts[Math.floor(Math.random() * gifts.length)];
+                container.innerText = '✨';
+                setTimeout(() => {
+                    container.style.fontSize = '1.2rem';
+                    container.classList.remove('text-6xl');
+                    container.classList.add('text-lg', 'font-serif', 'italic', 'text-gray-700', 'px-4');
+                    container.innerText = randomGift;
+                    status.innerText = "Come back tomorrow for another gift!";
+                }, 500);
             }
         }
 
-        function toggleLanguage() {
-            isHindi = !isHindi;
-            if(isHindi) {
-                document.querySelector('header p').innerText = "भारत से मेरी प्यारी फरिश्ता";
-                document.getElementById('lang-btn-text').innerText = "English Language";
+        function unlockNames() {
+            const pass = document.getElementById('baby-pass').value;
+            if(pass.toLowerCase() === 'love') {
+                document.getElementById('baby-names-locked').classList.add('hidden');
+                document.getElementById('baby-names-unlocked').classList.remove('hidden');
             } else {
-                document.querySelector('header p').innerText = "My Lovely Angel from India";
-                document.getElementById('lang-btn-text').innerText = "Translate Love / प्यार का अनुवाद";
+                showModal("Hint: The password is what I feel for you (4 letters).");
             }
-        }
-
-        function refreshReason() {
-            const display = document.getElementById('carousel-display');
-            display.style.opacity = '0';
-            setTimeout(() => {
-                const randomReason = reasons[Math.floor(Math.random() * reasons.length)];
-                display.innerText = "“" + randomReason + "”";
-                display.style.opacity = '1';
-            }, 400);
         }
 
         function startCountdown() {
-            // Target: Set to a specific date or roughly 6 months from now for the airport visit
             const targetDate = new Date();
-            targetDate.setMonth(targetDate.getMonth() + 6); 
+            targetDate.setFullYear(targetDate.getFullYear() + 2); 
 
             function update() {
                 const now = new Date();
@@ -394,57 +450,72 @@
             update();
         }
 
+        function refreshReason() {
+            const display = document.getElementById('carousel-display');
+            display.style.opacity = '0';
+            setTimeout(() => {
+                display.innerText = "“" + reasons[Math.floor(Math.random() * reasons.length)] + "”";
+                display.style.opacity = '1';
+            }, 300);
+        }
+
+        function spawnPlane() {
+            const container = document.getElementById('plane-container');
+            const plane = document.createElement('div');
+            plane.className = 'plane-animation';
+            plane.innerHTML = '✈️';
+            plane.style.top = Math.random() * 80 + 'vh';
+            plane.style.left = '-50px';
+            container.appendChild(plane);
+            let pos = -50;
+            const id = setInterval(() => {
+                if (pos > window.innerWidth + 50) { clearInterval(id); plane.remove(); }
+                else { pos += 3; plane.style.left = pos + 'px'; }
+            }, 30);
+        }
+
+        let pomoActive = false, pomoTime = 1500, pomoInt;
+        function togglePomodoro() {
+            const btn = document.getElementById('pomo-start');
+            if (!pomoActive) {
+                pomoActive = true; btn.innerText = "Pause";
+                pomoInt = setInterval(() => {
+                    pomoTime--; updatePomoDisplay();
+                    if (pomoTime <= 0) { clearInterval(pomoInt); resetPomodoro(); showModal("Study complete! Our UK future is waiting."); }
+                }, 1000);
+            } else { pomoActive = false; btn.innerText = "Resume"; clearInterval(pomoInt); }
+        }
+        function resetPomodoro() { clearInterval(pomoInt); pomoActive = false; pomoTime = 1500; updatePomoDisplay(); document.getElementById('pomo-start').innerText = "Start"; }
+        function updatePomoDisplay() { 
+            const m = Math.floor(pomoTime / 60); const s = pomoTime % 60;
+            document.getElementById('pomodoro-timer').innerText = `${m}:${s.toString().padStart(2,'0')}`;
+        }
+
         function activateValentine() {
-            document.body.classList.add('valentine-mode');
             document.getElementById('valentine-overlay').style.display = 'flex';
-            for(let i=0; i<30; i++) {
-                const h = document.createElement('div');
-                h.innerHTML = '❤️';
-                h.style.position = 'fixed';
-                h.style.left = Math.random() * 100 + 'vw';
-                h.style.top = '-50px';
-                h.style.fontSize = (Math.random() * 30 + 10) + 'px';
-                h.style.transition = `top ${Math.random()*5 + 5}s linear`;
+            for(let i=0; i<20; i++) {
+                const h = document.createElement('div'); h.innerHTML = '❤️';
+                h.style.position = 'fixed'; h.style.left = Math.random() * 100 + 'vw';
+                h.style.top = '-50px'; h.style.transition = `top ${Math.random()*5 + 3}s linear`;
                 document.getElementById('heart-shower').appendChild(h);
                 setTimeout(() => h.style.top = '110vh', 100);
             }
         }
-
-        function dodge(btn) {
-            btn.style.position = 'absolute';
-            btn.style.left = Math.random() * 80 + '%';
-            btn.style.top = Math.random() * 80 + '%';
+        function dodge(btn) { btn.style.position = 'absolute'; btn.style.left = Math.random()*80+'%'; btn.style.top = Math.random()*80+'%'; }
+        function valentineSuccess() { document.getElementById('valentine-overlay').innerHTML = "<h1 class='font-love text-8xl text-white drop-shadow-lg'>I Love You, Rei! ❤️</h1>"; }
+        function showModal(text) { document.getElementById('modal-text').innerText = text; document.getElementById('modal').style.display = 'flex'; }
+        function closeModal() { document.getElementById('modal').style.display = 'none'; }
+        function initStars() {
+            const container = document.getElementById('stars-container');
+            for(let i = 0; i < 40; i++) {
+                const s = document.createElement('div'); s.className = 'star';
+                s.style.width = s.style.height = '2px'; s.style.left = Math.random()*100+'vw';
+                s.style.top = Math.random()*100+'vh'; s.style.setProperty('--duration', Math.random()*3+2+'s');
+                container.appendChild(s);
+            }
         }
 
-        function valentineSuccess() {
-            document.getElementById('valentine-overlay').innerHTML = `
-                <div class="animate-bounce">
-                    <h1 class="font-love text-8xl text-rose-600">I Knew You'd Say Yes!</h1>
-                    <p class="font-royal text-2xl text-rose-800">I love you forever, Rei.</p>
-                    <button onclick="window.location.reload()" class="mt-8 text-rose-500 underline">Back to our portal</button>
-                </div>
-            `;
-        }
-
-        function showModal(text) {
-            const modal = document.getElementById('modal');
-            document.getElementById('modal-text').innerText = text;
-            modal.style.display = 'flex';
-        }
-
-        function closeModal() {
-            document.getElementById('modal').style.display = 'none';
-        }
-
-        window.onload = () => {
-            initStars();
-            startCountdown();
-            refreshReason();
-            document.getElementById('play-btn').onclick = () => {
-                showModal("Playing heart memory... 'Rei, I will wait for you forever.'");
-            };
-        };
+        window.onload = () => { initStars(); startCountdown(); refreshReason(); updateGreeting(); setInterval(spawnPlane, 12000); };
     </script>
 </body>
 </html>
-
